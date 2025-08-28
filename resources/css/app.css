@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Menambahkan gaya untuk link navigasi yang aktif */
+.auth-links a.active {
+    font-weight: bold;
+    color: #4338ca; /* Warna indigo yang lebih gelap */
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+}
+:root {
+    --primary-color: #6a5acd; /* Warna ungu lembut */
+    --secondary-color: #f4f4f4;
+    --text-color: #333;
+    --heading-font: "Playfair Display", serif;
+    --body-font: "Montserrat", sans-serif;
+}
+body {
+    margin: 0;
+    font-family: var(--body-font);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+/* Header & Navigasi */
+.main-header {
+    background: #fff;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-family: var(--heading-font);
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.auth-links a {
+    margin-left: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+.auth-links a:hover {
+    opacity: 0.7;
+}
+/* Hero Section */
+.hero {
+    /* background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url("https://images.unsplash.com/photo-1523438097201-512ae7d59c44?q=80&w=2070&auto=format&fit=crop"); */
+    height: 90vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+}
+.hero h1 {
+    font-family: var(--heading-font);
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+}
+.hero p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin-bottom: 2rem;
+}
+.cta-button {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+.cta-button:hover {
+    transform: translateY(-3px);
+    background: #5a4ab9;
+}
+/* Sections */
+.section {
+    padding: 60px 0;
+    text-align: center;
+}
+.section-title {
+    font-family: var(--heading-font);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+.section-subtitle {
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    color: #666;
+}
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    text-align: left;
+}
+.feature-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+.feature-card h3 {
+    font-family: var(--heading-font);
+    margin-top: 0;
+    color: var(--primary-color);
+}
+.bg-light {
+    background: var(--secondary-color);
+}
+/* Footer */
+.main-footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+/* navbar */
+.auth-links .relative button {
+    font-weight: bold;
+    color: var(--primary-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* resources/css/app.css */
+
+.dropdown-content {
+    /* Aturan yang sudah ada sebelumnya */
+    position: absolute; /* Pastikan ini ada, meskipun sudah di-set oleh kelas Tailwind */
+
+    /* TAMBAHKAN/UBAH BARIS INI */
+    z-index: 1001; /* Nilai ini harus lebih tinggi dari z-index header (1000) */
+}
+
+/* .dropdown-content[style] {
+    display: block !important;
+} */
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    color: #374151;
+    transition: background-color 0.2s;
+    margin-left: 0 !important; /* Reset margin */
+}
+
+.dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    opacity: 1; /* Reset opacity on hover */
+}
+[x-cloak] {
+    display: none !important;
+}
+.mobile-nav-link {
+    display: block;
+    padding: 0.5rem 0;
+    font-weight: 600;
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 0; /* Reset margin dari .auth-links */
+}
+.mobile-nav-link:hover {
+    color: var(--primary-color);
+}
+/* Menghilangkan scrollbar visual */
+.no-scrollbar::-webkit-scrollbar {
+    display: none; /* Untuk Chrome, Safari, dan Opera */
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none; /* Untuk IE dan Edge */
+    scrollbar-width: none; /* Untuk Firefox */
+}
