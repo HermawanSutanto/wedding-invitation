@@ -181,6 +181,7 @@ class InvitationController extends Controller
                 'events.*.start_time' => 'required',
                 'events.*.venue_name' => 'required|string|max:255',
                 'events.*.venue_address' => 'required|string',
+                'events.*.google_maps_link' => 'nullable|url', // <-- TAMBAHKAN VALIDASI INI
                 'stories'                 => 'nullable|array',
                 'stories.*.title'         => 'required_with:stories|string|max:255',
                 'stories.*.story_date'    => 'required_with:stories|string|max:255',

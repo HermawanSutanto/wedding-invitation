@@ -25,6 +25,11 @@
             <label for="event_{{ $index }}_venue_address" class="block text-sm font-medium text-gray-700">Alamat Lengkap Lokasi</label>
             <textarea name="events[{{ $index }}][venue_address]" id="event_{{ $index }}_venue_address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('events.'.$index.'.venue_address', $event->venue_address) }}</textarea>
         </div>
+        <div class="mt-6">
+            <label for="event_{{ $index }}_gmaps_link" class="block text-sm font-medium text-gray-700">Link Google Maps</label>
+            <input type="url" name="events[{{ $index }}][google_maps_link]" id="event_{{ $index }}_gmaps_link" value="{{ old('events.'.$index.'.google_maps_link', $event->google_maps_link) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="https://maps.app.goo.gl/xxxx">
+            <p class="mt-1 text-xs text-gray-500">Salin dan tempel link 'Share' dari Google Maps.</p>
+        </div>
     </div>
     @endforeach
     {{-- Tombol untuk menambah acara baru bisa ditambahkan di sini dengan Alpine.js/Livewire --}}
