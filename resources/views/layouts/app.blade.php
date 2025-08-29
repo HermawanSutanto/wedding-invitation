@@ -14,9 +14,9 @@
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/sort@latest/dist/cdn.min.js"></script>
-
+        
     </head>
-    <body class="font-sans antialiased overflow-x-auto no-scrollbar">
+    <body class="font-sans antialiased" x-data="{ errorModalOpen: false, errorMessages: [] }">
         {{-- Mengubah warna latar belakang menjadi lebih lembut --}}
         <div class="min-h-screen bg-rose-50">
             @include('layouts.partials.navbar')
@@ -32,6 +32,11 @@
             <main>
                 {{ $slot }}
             </main>
+        </div>
+         {{-- 2. Panggil komponen modal di sini --}}
+        <div x-data="{ open: false, messages: [] }" 
+            x-init="$watch('errorModalOpen', value => { open = value; messages = errorMessages; })">
+            <x-error-modal />
         </div>
     </body>
 </html>

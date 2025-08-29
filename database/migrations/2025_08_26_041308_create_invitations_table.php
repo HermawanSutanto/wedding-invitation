@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relasi ke user
             $table->foreignId('template_id')->constrained(); // Relasi ke template
+            $table->foreignId('package_id')->nullable()->constrained()->onDelete('set null');
             $table->string('groom_name'); // Nama mempelai pria
             $table->string('groom_info');
             $table->string('bride_name'); // Nama mempelai wanita
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->string('cover_image')->nullable();
             $table->string('hero_image')->nullable();
+
             $table->timestamps();
         });
     }

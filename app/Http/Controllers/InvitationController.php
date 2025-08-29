@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Invitation;
+use App\Models\Package;
 use App\Models\Template;
 use App\Traits\ImageUploadTrait; // <-- 1. IMPORT TRAIT DI SINI
 use Illuminate\Http\Request;
@@ -27,20 +28,15 @@ class InvitationController extends Controller
     public function index()
     {
         $invitations = Auth::user()->invitations()->latest()->get();
-        // dd($invitations);
         return view('invitations.index', compact('invitations'));
     }
     public function show()
     {
-        // Ambil undangan milik user yang sedang login
-        // Untuk saat ini, kita asumsikan satu user hanya punya satu undangan
+        
         $invitation = Auth::user()->invitations()->first();
 
-        // Jika user belum punya undangan, arahkan ke halaman pilih template
         if (!$invitation) {
-            // Logika untuk membuat undangan baru setelah pilih template
-            // akan kita buat di langkah selanjutnya.
-            // Untuk sekarang, kita arahkan saja.
+           
             return redirect()->route('templates.index')
                 ->with('info', 'Anda belum membuat undangan. Silakan pilih template terlebih dahulu.');
         }
@@ -48,94 +44,78 @@ class InvitationController extends Controller
         return view('invitations.form', compact('invitation'));
     }
 
-    /**
-     * Membuat draft undangan baru dari template.
-     */
+ 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'template_id' => 'required|exists:templates,id',
-            'groom_name'  => 'required|string|max:255',
-            'groom_info'  => 'required|string|max:255',
-            'bride_name'  => 'required|string|max:255',
-            'bride_info'  => 'required|string|max:255',
-            'quote'       => 'nullable|string',
-            'quote_source'=> 'nullable|string',
+            'package_id'  => 'required|exists:packages,id',
         ]);
 
-        DB::transaction(function () use ($validated) {
-            $invitation = Invitation::create([
-                'user_id'     => Auth::id(),
-                'template_id' => $validated['template_id'],
-                'slug'        => 'undangan-' . Str::random(10),
-                'groom_name'  => $validated['groom_name'],
-                'groom_info'  => $validated['groom_info'],
-                'bride_name'  => $validated['bride_name'],
-                'bride_info'  => $validated['bride_info'],
-                'quote'       => $validated['quote'] ?? null,
-                'quote_source'=> $validated['quote_source'] ?? null,
-            ]);
+        try {
+            $invitation = DB::transaction(function () use ($validated) {
+                
+                $invitation = Invitation::create([
+                    'user_id'       => Auth::id(),
+                    'template_id'   => $validated['template_id'],
+                    'package_id'    => $validated['package_id'],
+                    'slug'          => 'undangan-' . Str::lower(Str::random(10)),
+                    'groom_name'    => 'Nama Mempelai Pria',
+                    'groom_info'    => 'Putra dari Bpk. ... & Ibu. ...',
+                    'bride_name'    => 'Nama Mempelai Wanita',
+                    'bride_info'    => 'Putri dari Bpk. ... & Ibu. ...',
+                    'quote'         => '"Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri..."',
+                    'quote_source'  => 'QS. Ar-Rum: 21',
+                ]);
 
-            // Bisa tambahkan default event
-            $invitation->events()->create([
-                'title'         => 'Akad Nikah',
-                'event_date'    => now()->addMonth(),
-                'start_time'    => '09:00',
-                'venue_name'    => 'Lokasi',
-                'venue_address' => 'Alamat lengkap',
-            ]);
-        });
+                $invitation->events()->create([
+                    'title'         => 'Akad Nikah',
+                    'event_date'    => now()->addMonth(),
+                    'start_time'    => '09:00',
+                    'venue_name'    => 'Nama Lokasi',
+                    'venue_address' => 'Alamat Lengkap Lokasi',
+                    'google_maps_link' => '',
+                    'livestream_link' => '',
+                ]);
+                
+                $invitation->stories()->createMany([
+                    [
+                        'title'       => 'Pertama Bertemu',
+                        'story_date'  => 'Juni 2022',
+                        'description' => 'Kami bertemu di sebuah acara komunitas, sebuah awal yang tak terduga dari sebuah cerita indah.',
+                        'order'       => 1
+                    ],
+                    [
+                        'title'       => 'Lamaran',
+                        'story_date'  => 'Desember 2024',
+                        'description' => 'Sebuah momen spesial saat sebuah pertanyaan dijawab dengan "Ya", mengikat janji untuk selamanya.',
+                        'order'       => 2
+                    ],
+                ]);
 
-        return redirect()->route('invitations.index')
-                         ->with('success', 'Undangan baru berhasil dibuat!');
+                return $invitation;
+            });
+
+            // Redirect ke halaman edit setelah undangan berhasil dibuat
+            return redirect()->route('invitation.edit', $invitation)
+                            ->with('success', 'Draft undangan berhasil dibuat! Silakan lengkapi detailnya.');
+
+        } catch (\Exception $e) {
+            // Tangani jika ada error saat proses pembuatan
+            Log::error('Gagal membuat undangan baru: ' . $e->getMessage());
+            return back()->with('error', 'Gagal membuat undangan. Terjadi kesalahan.');
+        }
     }
 
        
-    
-    public function createFromTemplate(Template $template)
+    public function showPackageSelection(Template $template)
     {
-        $invitation = Invitation::create([
-            'user_id' => Auth::id(),
-            'template_id' => $template->id,
-            'slug' => 'undangan-' . Str::random(10),
-            'groom_name' => 'Nama Mempelai Pria',
-            'groom_info' => 'Putra dari Bpk. ... & Ibu. ...',
-            'bride_name' => 'Nama Mempelai Wanita',
-            'bride_info' => 'Putri dari Bpk. ... & Ibu. ...',
-            'quote' => '"Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri..."',
-            'quote_source' => 'QS. Ar-Rum: 21',
-        ]);
-
-        $invitation->events()->create([
-            'title' => 'Akad Nikah',
-            'event_date' => now()->addMonth(),
-            'start_time' => '09:00',
-            'venue_name' => 'Nama Lokasi',
-            'venue_address' => 'Alamat Lengkap Lokasi',
-        ]);
-
-        $invitation->stories()->createMany([
-        [
-            'title' => 'Pertama Bertemu',
-            'story_date' => 'Juni 2022',
-            'description' => 'Kami bertemu di sebuah acara komunitas, sebuah awal yang tak terduga dari sebuah cerita indah.',
-            'order' => 1
-        ],
-        [
-            'title' => 'Lamaran',
-            'story_date' => 'Desember 2024',
-            'description' => 'Sebuah momen spesial saat sebuah pertanyaan dijawab dengan "Ya", mengikat janji untuk selamanya.',
-            'order' => 2
-        ],
-    ]);
-        
-        return redirect()->route('invitation.edit', $invitation)
-                         ->with('success', 'Draft undangan berhasil dibuat! Silakan lengkapi detailnya.');
+        $packages = Package::all();
+        return view('invitations.packages', compact('template', 'packages'));
     }
 
-    /**
-     * Menampilkan form untuk mengedit undangan.
-     */
+
+    
     public function edit(Invitation $invitation)
     {
         if ($invitation->user_id !== Auth::id()) {
@@ -160,45 +140,58 @@ class InvitationController extends Controller
         if ($invitation->user_id !== Auth::id()) {
             abort(403);
         }
+    // --- LOGIKA VALIDASI BATAS GALERI ---
+        $galleryLimit = $invitation->package->count_gallery ?? 0;
+        $currentGalleryCount = $invitation->galleries()->count();
+        $newImagesCount = count($request->file('gallery_images') ?? []);
+        $remainingSlots = max(0, $galleryLimit - $currentGalleryCount); // max(0, ..) untuk pastikan tidak negatif
+        $validated = $request->validate([
+            'groom_name' => 'required|string|max:255',
+            'groom_info' => 'required|string|max:255',
+            'bride_name' => 'required|string|max:255',
+            'bride_info' => 'required|string|max:255',
+            'quote'      => 'nullable|string',
+            'quote_source' => 'nullable|string',
+            'slug'       => ['required', 'string', 'max:255', Rule::unique('invitations')->ignore($invitation->id)],
+            'groom_photo' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'bride_photo' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'hero_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'events'            => 'required|array',
+            'events.*.title'    => 'required|string|max:255',
+            'events.*.event_date' => 'required|date',
+            'events.*.start_time' => 'required',
+            'events.*.venue_name' => 'required|string|max:255',
+            'events.*.venue_address' => 'required|string',
+            'events.*.google_maps_link' => 'nullable|url',
+            'events.*.livestream_link' => 'nullable|url', 
+            'stories'                 => 'nullable|array',
+            'stories.*.title'         => 'required_with:stories|string|max:255',
+            'stories.*.story_date'    => 'required_with:stories|string|max:255',
+            'stories.*.description'   => 'required_with:stories|string',
+            'stories.*.order'         => 'required_with:stories|integer', // <-- TAMBAHKAN VALIDASI INI
+            'gallery_images'   => [
+            'nullable',
+            'array',
+                function ($attribute, $value, $fail) use ($newImagesCount, $remainingSlots,$galleryLimit) {
+                    if ($newImagesCount > $remainingSlots) {
+                        $fail("Anda hanya bisa mengunggah {$remainingSlots} foto lagi untuk paket ini. Batas maksimal adalah {$galleryLimit} foto.");
+                    }
+                },
+            ],
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+            'gifts'                       => 'nullable|array',
+            'gifts.*.bank_name'           => 'required|string|max:255',
+            'gifts.*.account_number'      => 'required|string|max:255',
+            'gifts.*.account_holder_name'   => 'required|string|max:255',
+            // Validasi untuk amplop baru
+            'new_gift.bank_name'        => 'nullable|required_with:new_gift.account_number,new_gift.account_holder_name|string|max:255',
+            'new_gift.account_number'     => 'nullable|required_with:new_gift.bank_name,new_gift.account_holder_name|string|max:255',
+            'new_gift.account_holder_name'  => 'nullable|required_with:new_gift.bank_name,new_gift.account_number|string|max:255',
 
+        ]);
         try {
-            // --- LANGKAH 1: VALIDASI SEMUA DATA SEKALIGUS ---
-            $validated = $request->validate([
-                'groom_name' => 'required|string|max:255',
-                'groom_info' => 'required|string|max:255',
-                'bride_name' => 'required|string|max:255',
-                'bride_info' => 'required|string|max:255',
-                'quote'      => 'nullable|string',
-                'quote_source' => 'nullable|string',
-                'slug'       => ['required', 'string', 'max:255', Rule::unique('invitations')->ignore($invitation->id)],
-                'groom_photo' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-                'bride_photo' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-                'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-                'hero_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp',
-                'events'            => 'required|array',
-                'events.*.title'    => 'required|string|max:255',
-                'events.*.event_date' => 'required|date',
-                'events.*.start_time' => 'required',
-                'events.*.venue_name' => 'required|string|max:255',
-                'events.*.venue_address' => 'required|string',
-                'events.*.google_maps_link' => 'nullable|url', // <-- TAMBAHKAN VALIDASI INI
-                'stories'                 => 'nullable|array',
-                'stories.*.title'         => 'required_with:stories|string|max:255',
-                'stories.*.story_date'    => 'required_with:stories|string|max:255',
-                'stories.*.description'   => 'required_with:stories|string',
-                'stories.*.order'         => 'required_with:stories|integer', // <-- TAMBAHKAN VALIDASI INI
-                'gallery_images'   => 'nullable|array',
-                'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp',
-                'gifts'                       => 'nullable|array',
-                'gifts.*.bank_name'           => 'required|string|max:255',
-                'gifts.*.account_number'      => 'required|string|max:255',
-                'gifts.*.account_holder_name'   => 'required|string|max:255',
-                // Validasi untuk amplop baru
-                'new_gift.bank_name'        => 'nullable|required_with:new_gift.account_number,new_gift.account_holder_name|string|max:255',
-                'new_gift.account_number'     => 'nullable|required_with:new_gift.bank_name,new_gift.account_holder_name|string|max:255',
-                'new_gift.account_holder_name'  => 'nullable|required_with:new_gift.bank_name,new_gift.account_number|string|max:255',
-
-            ]);
+           
         
         // --- LANGKAH 2: PROSES GAMBAR DAN TAMBAHKAN PATH KE ARRAY $validated ---
 
@@ -220,10 +213,8 @@ class InvitationController extends Controller
             $validated['hero_image'] = $this->processImage($request->file('hero_image'), 'images/invitations', 'hero_', 1920, 1080);
         }
 
-        // --- LANGKAH 3: UPDATE DATA UTAMA UNDANGAN ---
-        // Menggunakan trik `getFillable()` untuk mengambil hanya data yang relevan untuk model Invitation
+       
            DB::transaction(function () use ($invitation, $validated, $request) {
-                // Update data utama undangan
                 $invitation->update(
                     collect($validated)->only($invitation->getFillable())->all()
                 );
@@ -237,13 +228,7 @@ class InvitationController extends Controller
                     }
                 }
 
-                // Update setiap kisah cinta
-                // if (isset($validated['stories'])) {
-                //     foreach ($validated['stories'] as $storyId => $storyData) {
-                //         $story = $invitation->stories()->find($storyId);
-                //         if ($story) $story->update($storyData);
-                //     }
-                // }
+                
                 $storyDataFromRequest = $request->input('stories', []);
                 $submittedStoryIds = [];
 

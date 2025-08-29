@@ -10,7 +10,7 @@ class Invitation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'template_id', 'slug', 'groom_name', 'groom_info',
+        'user_id', 'template_id','package_id', 'slug', 'groom_name', 'groom_info',
         'groom_photo_path', 'bride_name', 'bride_info', 'bride_photo_path',
         'quote', 'quote_source', 'status','cover_image', 'hero_image'
     ];
@@ -22,4 +22,5 @@ class Invitation extends Model
     public function galleries() { return $this->hasMany(Gallery::class)->orderBy('order'); }
     public function gifts() { return $this->hasMany(Gift::class); }
     public function guestbooks() { return $this->hasMany(Guestbook::class)->latest(); }
+    public function package() { return $this->belongsTo(Package::class); }
 }

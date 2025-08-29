@@ -10,19 +10,21 @@ class PublicInvitationController extends Controller
 {
    
 
-    public function show(Invitation $invitation)
+      public function show(Request $request, Invitation $invitation)
     {
-
+        $guestName = $request->query('to', 'Tamu Undangan');
+        $invitation->load(['package', 'events', 'stories', 'galleries', 'gifts', 'guestbooks']);
        // Kondisi 1: Jika undangan sudah dipublikasikan, semua orang bisa lihat.
         if ($invitation->status === 'published') {
             $invitation->load(['events', 'stories', 'galleries', 'gifts', 'guestbooks']);
-            return view('templates.preview-classic-elegant', compact('invitation')); // Pastikan path view benar
+            return view('templates.preview-classic-elegant', compact('invitation','guestName')); // Pastikan path view benar
         }
 
         // Kondisi 2: Jika undangan masih draft, hanya pemilik yang bisa lihat (untuk pratinjau).
         if ($invitation->status === 'draft' && Auth::check() && Auth::id() === $invitation->user_id) {
             $invitation->load(['events', 'stories', 'galleries', 'gifts', 'guestbooks']);
-            return view('templates.preview-classic-elegant', compact('invitation')); // Pastikan path view benar
+            return view('templates.preview-classic-elegant', compact('invitation','guestName')); 
+            
         }
         
         // Kondisi 3 (BARU): Jika undangan masih draft dan diakses oleh tamu,

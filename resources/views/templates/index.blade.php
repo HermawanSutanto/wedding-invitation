@@ -31,12 +31,15 @@
                                         {{-- Tombol Pilih --}}
                                         {{-- Ganti tombol "Pilih" Anda dengan kode ini --}}
 
-                                        <form action="{{ route('invitation.createFromTemplate', $template) }}" method="POST">
+                                        {{-- <form action="{{ route('invitation.createFromTemplate', $template) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700">
                                                 Pilih
                                             </button>
-                                        </form>
+                                        </form> --}}
+                                        <a href="{{ route('invitation.packages', $template) }}" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700">
+                                            Pilih
+                                        </a>
                                         {{-- Form untuk Tombol Hapus --}}
                                         @if(auth()->user()->isAdmin())
                                         <form action="{{ route('templates.destroy', $template) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus template ini?');">

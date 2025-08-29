@@ -1,5 +1,6 @@
 <?php
 
+use \App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvitationController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicInvitationController;
 use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -27,22 +29,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Menjadi baris ini
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 Route::get('/classic-elegant', function () {
     return view('templates.preview-classic-elegant');
 })->name('templates.classic-elegant');
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Ganti route '/dashboard' yang lama dengan ini
 Route::get('/dashboard', [HomeController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
 // routes/web.php
+Route::get('/undangan/{invitation:slug}', [PublicInvitationController::class, 'show'])
+    ->name('invitation.public.show');
 Route::get('/undangan/{invitation:slug}', [PublicInvitationController::class, 'show'])
     ->name('invitation.public.show');
 Route::middleware('auth')->group(function () {
@@ -79,12 +78,20 @@ Route::middleware('auth')->group(function () {
       // Route BARU untuk menghapus satu amplop digital
     Route::delete('/gifts/{gift}', [GiftController::class, 'destroy'])->name('gift.destroy');
 
+    Route::get('/invitations/create/{template}/packages', [InvitationController::class, 'showPackageSelection'])->name('invitation.packages');
+
+
 });
 Route::middleware(['auth'])->group(function () {
     Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
     Route::get('/packages/create', [PackageController::class, 'create'])->name('packages.create');
     Route::post('/packages/create/store', [PackageController::class, 'store'])->name('packages.store');
+    Route::delete('/packages/{package})', [PackageController::class, 'destroy'])->name('packages.destroy');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    
+    Route::patch('/orders/{invitation}/update-status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
 });
-
+    
 require __DIR__.'/auth.php';

@@ -1,6 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .quick-action-btn {
+        @apply w-full flex items-center justify-center px-4 py-3 text-white rounded-lg transition font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-1;
+    }
+}
 /* Menambahkan gaya untuk link navigasi yang aktif */
 .auth-links a.active {
     font-weight: bold;

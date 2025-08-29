@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('venue_address');
             $table->json('dress_code_colors')->nullable(); // Bisa menyimpan ['#e3d5d1', '#bfa06b']
             $table->string('google_maps_link')->nullable();
+            $table->string('livestream_link')->nullable();
             $table->unsignedTinyInteger('order')->default(0);
             $table->timestamps();
         });

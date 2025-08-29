@@ -30,20 +30,32 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi data yang masuk dari form
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'value' => 'nullable|numeric|gte:price', // gte:price -> value harus lebih besar atau sama dengan price
+            'value' => 'nullable|numeric|gte:price',
             'count_gallery' => 'required|integer|min:0',
+            'max_guests' => 'required|integer|min:0',
+            'has_love_story' => 'nullable|boolean',
+            'has_music' => 'nullable|boolean',
+            'has_rsvp' => 'nullable|boolean',
+            'has_live_streaming' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
+            'is_active' => 'nullable|boolean',
         ]);
 
-        // 2. Simpan data yang sudah divalidasi ke database
+        // Menangani checkbox yang tidak dicentang (tidak akan dikirim dalam request)
+        $validated['has_love_story'] = $request->has('has_love_story');
+        $validated['has_music'] = $request->has('has_music');
+        $validated['has_rsvp'] = $request->has('has_rsvp');
+        $validated['has_live_streaming'] = $request->has('has_live_streaming');
+        $validated['is_featured'] = $request->has('is_featured');
+        $validated['is_active'] = $request->has('is_active');
+
         Package::create($validated);
 
-        // 3. Redirect ke halaman daftar paket dengan pesan sukses
         return redirect()->route('packages.index')
-                         ->with('success', 'Paket baru berhasil ditambahkan!');
+                        ->with('success', 'Paket baru berhasil ditambahkan!');
     }
 
     /**
@@ -75,6 +87,17 @@ class PackageController extends Controller
      */
     public function destroy(Package $package)
     {
-        //
+        try {
+            $packageName = $package->name;
+            $package->delete();
+
+            return redirect()->route('packages.index')
+                             ->with('success', "Paket '{$packageName}' berhasil dihapus.");
+
+        } catch (\Exception $e) {
+            Log::error('Gagal menghapus paket (ID: '. $package->id .'): ' . $e->getMessage());
+            
+            return back()->with('error', 'Gagal menghapus paket. Terjadi kesalahan.');
+        }
     }
 }

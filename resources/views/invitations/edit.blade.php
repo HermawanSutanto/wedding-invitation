@@ -5,7 +5,52 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{ tab: 'utama' }">
+    {{-- 1. GANTI x-data DENGAN LOGIKA BARU --}}
+    <div class="py-12" x-data="{ 
+        tab: 'utama',
+        submitting: false,
+        submitForm() {
+            if (this.$refs.editForm.checkValidity()) {
+                this.submitting = true;
+                this.$refs.editForm.submit();
+            } else {
+                this.showClientSideErrors();
+            }
+        },
+        showClientSideErrors() {
+            const invalidFields = Array.from(this.$refs.editForm.querySelectorAll(':invalid'));
+            
+            if (invalidFields.length > 0) {
+                // Ambil semua pesan error dari browser
+                let messages = invalidFields.map(field => {
+                    const label = document.querySelector(`label[for='${field.id}']`);
+                    return label ? `${label.textContent}: ${field.validationMessage}` : field.validationMessage;
+                });
+
+                // Set state global Alpine untuk memicu modal
+                errorMessages = messages;
+                errorModalOpen = true;
+
+                // Pindah ke tab yang berisi error pertama
+                const firstInvalid = invalidFields[0];
+                const tabPane = firstInvalid.closest('[x-show]');
+                if (tabPane) {
+                    const tabName = tabPane.getAttribute('x-show').match(/'(.*?)'/)[1];
+                    if (tabName) {
+                        this.tab = tabName;
+                        setTimeout(() => firstInvalid.focus(), 150);
+                    }
+                }
+            }
+        }
+    }">
+        <div x-init="
+            {{-- Inisialisasi modal jika ada error dari server --}}
+            @if($errors->any())
+                errorMessages = {{ json_encode($errors->all()) }};
+                errorModalOpen = true;
+            @endif
+        ">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="mb-6 border-b border-gray-200">
@@ -20,23 +65,27 @@
                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Detail Acara
                     </a>
+                    @if($invitation->package && $invitation->package->has_love_story)
                     <a href="#" @click.prevent="tab = 'kisah'"
                        :class="{ 'border-indigo-500 text-indigo-600': tab === 'kisah', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'kisah' }"
                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Detail Kisah
                     </a>
+                    @endif
+                    @if($invitation->package && $invitation->package->count_gallery > 0)
                     <a href="#" @click.prevent="tab = 'galeri'"
                         :class="{ 'border-indigo-500 text-indigo-600': tab === 'galeri', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'galeri' }"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Galeri Foto
                     </a>
+                    @endif
+                    @if($invitation->package && $invitation->package->has_rsvp)
                     <a href="#" @click.prevent="tab = 'amplop'"
                         :class="{ 'border-indigo-500 text-indigo-600': tab === 'amplop', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'amplop' }"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Amplop Digital
                     </a>
-                    
-                    {{-- Tambahkan tab lain di sini jika perlu --}}
+                    @endif
                 </nav>
             </div>
 
@@ -52,23 +101,30 @@
                             </ul>
                         </div>
                     @endif
-                    <form action="{{ route('invitation.update', $invitation) }}" method="POST" enctype="multipart/form-data" x-data="{ submitting: false }" @submit="submitting = true">
+                    <form x-ref="editForm" action="{{ route('invitation.update', $invitation) }}" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf
                         @method('PUT')
 
                         {{-- Konten Tab Sekarang Memanggil Partial --}}
                         <div x-show="tab === 'utama'">  @include('invitations.partials.form-utama') </div>
                         <div x-show="tab === 'acara'">  @include('invitations.partials.form-acara') </div>
+                        @if($invitation->package && $invitation->package->has_love_story)   
                         <div x-show="tab === 'kisah'">  @include('invitations.partials.form-kisah') </div>
+                        @endif
+                        @if($invitation->package && $invitation->package->count_gallery > 0)
                         <div x-show="tab === 'galeri'"> @include('invitations.partials.form-galeri') </div>
+                        @endif
+                        @if($invitation->package && $invitation->package->has_rsvp)
                         <div x-show="tab === 'amplop'"> @include('invitations.partials.form-amplop') </div>
+                        @endif
 
 
 
                         <div class="mt-8 pt-5 border-t">
                             <div class="flex justify-end">
-                                {{-- Modifikasi tombol ini --}}
-                                <button type="submit" 
+                                {{-- 3. UBAH TOMBOL MENJADI type="button" DAN PANGGIL FUNGSI BARU --}}
+                                <button type="button" 
+                                        @click="submitForm"
                                         :disabled="submitting"
                                         class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50">
                                     <span x-show="!submitting">Simpan Perubahan</span>

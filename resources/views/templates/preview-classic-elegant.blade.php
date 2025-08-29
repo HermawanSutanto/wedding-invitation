@@ -238,7 +238,7 @@
             </h1>
             <p>Kepada Yth. Bapak/Ibu/Saudara/i:</p>
             <h3 id="guest-name">
-                {{ request()->query('to') ?? 'Tamu Undangan' }}
+                {{  $guestName  ?? 'Tamu Undangan' }}
             </h3>
             <p>
                 Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir di
@@ -304,7 +304,8 @@
                 </div>
             </div>
         </section>
-
+        
+        @if($invitation->package && $invitation->package->has_love_story)
         <section class="love-story animate-on-scroll" id="story">
             <h2 class="script-font">Our Love Story</h2>
             <div class="timeline">
@@ -322,7 +323,7 @@
                 @endforeach
             </div>
         </section>
-
+        @endif
         <section class="event animate-on-scroll" id="event">
             <h2 class="script-font">Save The Date</h2>
             @if($invitation->events->first())
@@ -358,6 +359,36 @@
                 @endforeach
             </div>
         </section>
+        {{-- TAMBAHKAN SECTION BARU INI --}}
+        @if($invitation->package && $invitation->package->has_live_streaming)
+            @php
+                $hasLivestream = $invitation->events->some(fn($event) => !empty($event->livestream_link));
+            @endphp
+
+            @if($hasLivestream)
+            <section class="livestream animate-on-scroll" id="livestream">
+                <h2 class="script-font">Live Streaming</h2>
+                <p class="mb-6">Bagi Anda yang tidak dapat hadir, kami mengundang Anda untuk menyaksikan siaran langsung pernikahan kami melalui tautan di bawah ini.</p>
+                
+                <div class="event-container">
+                    @foreach($invitation->events as $event)
+                        @if($event->livestream_link)
+                            <div class="event-card">
+                                <h3>{{ $event->title }}</h3>
+                                <p><i class="fa-solid fa-calendar-day"></i> {{ \Carbon\Carbon::parse($event->event_date)->isoFormat('dddd, D MMMM YYYY') }}</p>
+                                <p><i class="fa-solid fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }} WIB</p>
+                                <a href="{{ $event->livestream_link }}" target="_blank" class="map-button mt-4">
+                                    <i class="fa-solid fa-video mr-2"></i> Tonton Siaran Langsung
+                                </a>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </section>
+            @endif
+        @endif
+
+        
 
         <section class="gallery animate-on-scroll" id="gallery">
             <h2 class="script-font">Our Moments</h2>
@@ -399,6 +430,7 @@
             </p>
         </section>
 
+        @if($invitation->package && $invitation->package->has_rsvp)
         <section class="gift animate-on-scroll">
             <h2 class="script-font">Wedding Gift</h2>
             <p>
@@ -461,6 +493,7 @@
                 @endforeach
             </div>
         </section>
+        @endif
 
         <footer>
             <p>
@@ -478,17 +511,22 @@
         <span class="close-modal">×</span>
         <img class="modal-content" id="modal-image" />
     </div>
-
+   @if($invitation->package && $invitation->package->has_music)
     <button id="music-toggle" class="music-button">
         <i class="fa-solid fa-compact-disc"></i>
     </button>
-    <audio id="background-music" src="{{ asset('audio/background-music.mp3') }}" loop></audio>  
+    <audio id="background-music" src="{{ asset('audio/background-music.mp3') }}" loop></audio>  
+    @endif
     <nav class="bottom-nav">
         <a href="#home"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="#couple"><i class="fas fa-heart"></i><span>Couple</span></a>
         <a href="#event"><i class="fas fa-calendar-check"></i><span>Event</span></a>
         <a href="#gallery"><i class="fas fa-images"></i><span>Gallery</span></a>
+        @if($invitation->package && $invitation->package->has_rsvp)
+
         <a href="#rsvp"><i class="fas fa-envelope"></i><span>RSVP</span></a>
+        @endif
+
     </nav>
 
     <script>
@@ -560,13 +598,13 @@
             }
 
             // --- Buka Undangan ---
+            
             const openButton = document.getElementById("open-invitation");
             const cover = document.getElementById("cover");
             const mainContent = document.getElementById("main-content");
             const audio = document.getElementById("background-music");
             const musicToggleButton = document.getElementById("music-toggle");
-
-            openButton.addEventListener("click", () => {
+                openButton.addEventListener("click", () => {
                 cover.style.opacity = "0";
                 setTimeout(() => {
                     cover.style.display = "none";
@@ -574,20 +612,28 @@
 
                 mainContent.style.display = "block";
                 document.body.style.overflow = "auto";
-                audio.play().catch((e) => console.error(e));
-                musicToggleButton.classList.remove("paused");
+                if (audio) {
+                    audio.play().catch(e => console.error("Autoplay diblokir oleh browser:", e));
+                    if(musicToggleButton) {
+                        musicToggleButton.classList.remove("paused");
+                    }
+                }
             });
 
             // --- Kontrol Musik ---
-            musicToggleButton.addEventListener("click", () => {
-                if (audio.paused) {
-                    audio.play();
-                    musicToggleButton.classList.remove("paused");
-                } else {
-                    audio.pause();
-                    musicToggleButton.classList.add("paused");
-                }
-            });
+            if (musicToggleButton && audio) {
+                musicToggleButton.addEventListener("click", () => {
+                    if (audio.paused) {
+                        audio.play();
+                        musicToggleButton.classList.remove("paused");
+                    } else {
+                        audio.pause();
+                        musicToggleButton.classList.add("paused");
+                    }
+                });
+            }
+            
+            
 
             // --- Animasi Saat Scroll ---
             const observer = new IntersectionObserver(
@@ -672,8 +718,9 @@
             // --- Buku Tamu (Guest Book) ---
             const rsvpForm = document.getElementById("rsvp-form");
             const guestbookContainer = document.getElementById("guestbook-container");
-
-            const displayGuestbookEntry = (name, attendance, wishes) => {
+            if (rsvpForm && guestbookContainer) {
+                    
+                const displayGuestbookEntry = (name, attendance, wishes) => {
                 const entryDiv = document.createElement("div");
                 entryDiv.className = "guestbook-entry";
                 entryDiv.innerHTML = `
@@ -683,21 +730,22 @@
                     </div>
                     <p class="message">${wishes}</p>`;
                 guestbookContainer.prepend(entryDiv);
-            };
+                };
+                    
 
-            // Contoh ucapan awal
-            displayGuestbookEntry(
-                "Budi Santoso",
-                "Hadir",
-                "Selamat berbahagia John & Jane! Semoga menjadi keluarga yang sakinah, mawadah, warahmah."
-            );
-            displayGuestbookEntry(
-                "Citra Lestari",
-                "Hadir",
-                "Congrats on your wedding! Wishing you a lifetime of love and happiness."
-            );
+                // Contoh ucapan awal
+                displayGuestbookEntry(
+                    "Budi Santoso",
+                    "Hadir",
+                    "Selamat berbahagia John & Jane! Semoga menjadi keluarga yang sakinah, mawadah, warahmah."
+                );
+                displayGuestbookEntry(
+                    "Citra Lestari",
+                    "Hadir",
+                    "Congrats on your wedding! Wishing you a lifetime of love and happiness."
+                );
 
-            rsvpForm.addEventListener("submit", function (event) {
+                rsvpForm.addEventListener("submit", function (event) {
                 event.preventDefault();
                 const name = document.getElementById("name").value;
                 const attendance = document.getElementById("attendance").value;
@@ -706,7 +754,9 @@
                 displayGuestbookEntry(name, attendance, wishes);
                 alert(`Terima kasih ${name} atas konfirmasi dan ucapannya!`);
                 this.reset();
-            });
+                });
+
+            }
         });
     </script>
 </body>

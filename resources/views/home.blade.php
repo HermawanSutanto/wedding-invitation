@@ -208,6 +208,85 @@
         #features .feature-card h3 {
             color: var(--gold-color);
         }
+        /* Pricing Section */
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 50px;
+        align-items: center; /* Membuat kartu sejajar */
+    }
+    .pricing-card {
+        background: #fff;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+        border: 1px solid #eee;
+    }
+    .pricing-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    .pricing-card.featured {
+        transform: scale(1.05);
+        border: 2px solid var(--primary-color);
+    }
+    .featured-badge {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-color);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+    .package-name {
+        font-family: var(--heading-font);
+        font-size: 1.8rem;
+        color: var(--primary-color);
+    }
+    .package-price .price {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+        display: block;
+    }
+    .package-price .original-price {
+        color: #999;
+        text-decoration: line-through;
+    }
+    .package-features {
+        list-style: none;
+        padding: 0;
+        margin: 30px 0;
+        text-align: left;
+    }
+    .package-features li {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+    .package-features li.disabled {
+        color: #ccc;
+        text-decoration: line-through;
+    }
+    .package-features i {
+        margin-right: 10px;
+        color: #28a745; /* Green check */
+    }
+    .package-features li.disabled i {
+        color: #dc3545; /* Red cross */
+    }
+    .package-button {
+        width: 100%;
+        display: block;
+    }
     </style>
 </head>
 <body>
@@ -248,7 +327,41 @@
                 </div>
             </div>
         </section>
-
+        <section id="pricing" class="section bg-light">
+            <div class="container">
+                <h2 class="section-title">Paket Harga Fleksibel</h2>
+                <p class="section-subtitle">Pilih paket yang paling sesuai dengan kebutuhan Anda. Semua paket hadir dengan fitur terbaik untuk hari spesial Anda.</p>
+                
+                <div class="pricing-grid">
+                    @forelse($packages as $package)
+                        <div class="pricing-card {{ $package->is_featured ? 'featured' : '' }}">
+                            @if($package->is_featured)
+                                <div class="featured-badge">Paling Populer</div>
+                            @endif
+                            
+                            <h3 class="package-name">{{ $package->name }}</h3>
+                            <div class="package-price">
+                                <span class="price">Rp {{ number_format($package->price, 0, ',', '.') }}</span>
+                                @if($package->value)
+                                    <span class="original-price">Rp {{ number_format($package->value, 0, ',', '.') }}</span>
+                                @endif
+                            </div>
+                            <ul class="package-features">
+                                <li><i class="fas fa-check"></i> {{ $package->max_guests }} Tamu Undangan</li>
+                                <li><i class="fas fa-check"></i> {{ $package->count_gallery }} Foto Galeri</li>
+                                <li class="{{ $package->has_love_story ? '' : 'disabled' }}"><i class="fas {{ $package->has_love_story ? 'fa-check' : 'fa-times' }}"></i> Kisah Cinta</li>
+                                <li class="{{ $package->has_music ? '' : 'disabled' }}"><i class="fas {{ $package->has_music ? 'fa-check' : 'fa-times' }}"></i> Musik Latar</li>
+                                <li class="{{ $package->has_rsvp ? '' : 'disabled' }}"><i class="fas {{ $package->has_rsvp ? 'fa-check' : 'fa-times' }}"></i> RSVP & Buku Tamu</li>
+                                <li class="{{ $package->has_live_streaming ? '' : 'disabled' }}"><i class="fas {{ $package->has_live_streaming ? 'fa-check' : 'fa-times' }}"></i> Live Streaming</li>
+                            </ul>
+                            <a href="{{ route('register') }}" class="cta-button package-button">Pilih Paket</a>
+                        </div>
+                    @empty
+                        <p>Paket harga akan segera tersedia.</p>
+                    @endforelse
+                </div>
+            </div>
+        </section>
         <section id="how-it-works" class="section bg-light">
              <div class="container">
                 <h2 class="section-title">Hanya 3 Langkah Mudah</h2>

@@ -12,7 +12,8 @@ class Event extends Model
     protected $fillable = [
         'invitation_id', 'title', 'event_date', 'start_time', 'end_time',
         'venue_name', 'venue_address', 'dress_code_colors',
-        'google_maps_link', 'order'
+        'google_maps_link',    'livestream_link',
+        'order'
     ];
 
     protected $casts = [

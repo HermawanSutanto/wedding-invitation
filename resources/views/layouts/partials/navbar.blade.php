@@ -17,6 +17,8 @@
                         <a href="{{ route('profile.edit') }}" class="dropdown-item">Profil</a>
                         @if(auth()->user()->isAdmin())
                             <div class="border-t border-gray-100"></div>
+                            <a href="{{ route('orders.index') }}" class="dropdown-item">Kelola Pesanan</a> {{-- <-- TAMBAHKAN INI --}}
+
                             <a href="{{ route('templates.index') }}" class="dropdown-item">Kelola Template</a>
                             <a href="{{ route('packages.index') }}" class="dropdown-item">Kelola Paket</a>
                         @endif

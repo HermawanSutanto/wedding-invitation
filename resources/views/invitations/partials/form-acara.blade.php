@@ -30,6 +30,12 @@
             <input type="url" name="events[{{ $index }}][google_maps_link]" id="event_{{ $index }}_gmaps_link" value="{{ old('events.'.$index.'.google_maps_link', $event->google_maps_link) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="https://maps.app.goo.gl/xxxx">
             <p class="mt-1 text-xs text-gray-500">Salin dan tempel link 'Share' dari Google Maps.</p>
         </div>
+        @if($invitation->package && $invitation->package->has_live_streaming)
+        <div class="mt-6">
+            <label for="event_{{ $index }}_livestream_link" class="block text-sm font-medium text-gray-700">Link Live Streaming (Opsional)</label>
+            <input type="url" name="events[{{ $index }}][livestream_link]" id="event_{{ $index }}_livestream_link" value="{{ old('events.'.$index.'.livestream_link', $event->livestream_link) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Contoh: https://youtube.com/live/...">
+        </div>
+        @endif
     </div>
     @endforeach
     {{-- Tombol untuk menambah acara baru bisa ditambahkan di sini dengan Alpine.js/Livewire --}}

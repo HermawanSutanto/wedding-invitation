@@ -1,5 +1,9 @@
 <h3 class="text-xl font-semibold mb-6">Gambar Utama & Galeri Foto</h3>
-
+    @if($invitation->package)
+        <span class="text-sm font-normal text-gray-500">
+            (Batas: {{ $invitation->package->count_gallery }} foto)
+        </span>
+    @endif
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6 pb-6 border-b">
     <div x-data="{ imageUrl: '{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : '' }}' }">
         <label for="cover_image" class="block text-sm font-medium text-gray-700">Gambar Cover Depan</label>
@@ -35,25 +39,41 @@
 </div>
 
 <div 
-    x-data="{ previews: [] }" 
+    x-data="{ 
+        previews: [],
+        galleryLimit: {{ $invitation->package->count_gallery ?? 0 }},
+        currentCount: {{ $invitation->galleries->count() }},
+        get remainingSlots() {
+            return this.galleryLimit - this.currentCount;
+        },
+        get canUpload() {
+            return this.remainingSlots > 0;
+        }
+    }" 
     class="mb-6"
 >
-    <label for="gallery_images" class="block text-sm font-medium text-gray-700 mb-2">Upload Foto Galeri (Bisa pilih banyak)</label>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Upload Foto Galeri (Bisa pilih banyak)</label>
     
-    <label for="gallery_images" class="cursor-pointer mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition">
-        <div class="space-y-1 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            <span class="mt-2 block text-sm text-indigo-600 hover:text-indigo-800">Pilih foto untuk galeri</span>
+    <template x-if="canUpload">
+        <div>
+            <p class="text-xs text-gray-500 mb-2">Anda dapat mengunggah <strong x-text="remainingSlots"></strong> foto lagi.</p>
+            <label for="gallery_images" class="cursor-pointer mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition">
+                <div class="space-y-1 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    <span class="mt-2 block text-sm text-indigo-600 hover:text-indigo-800">Pilih foto untuk galeri</span>
+                </div>
+            </label>
+            <input 
+                type="file" name="gallery_images[]" id="gallery_images" 
+                multiple class="sr-only" 
+                @change="previews = Array.from($event.target.files).map(file => ({ url: URL.createObjectURL(file), name: file.name }))"
+            >
         </div>
-    </label>
-    <input 
-        type="file" 
-        name="gallery_images[]" 
-        id="gallery_images" 
-        multiple 
-        class="sr-only" 
-        @change="previews = Array.from($event.target.files).map(file => ({ url: URL.createObjectURL(file), name: file.name }))"
-    >
+    </template>
+
+    <div x-show="!canUpload" class="mt-1 p-4 border-2 border-dashed rounded-md bg-gray-50 text-center">
+        <p class="text-sm text-gray-500">Anda telah mencapai batas maksimal <strong x-text="galleryLimit"></strong> foto untuk paket ini.</p>
+    </div>
 
     <div x-show="previews.length > 0" class="mt-4">
         <h4 class="text-sm font-medium text-gray-800 mb-2">Pratinjau Foto Baru:</h4>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Package;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,9 +13,12 @@ class HomeController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+     public function index()
     {
-        return view('home');
+        // Ambil semua paket yang aktif, urutkan berdasarkan harga
+        $packages = Package::where('is_active', true)->orderBy('price')->get();
+
+        return view('home', compact('packages'));
     }
 
     /**
