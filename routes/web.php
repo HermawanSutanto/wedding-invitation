@@ -2,6 +2,7 @@
 
 use \App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\GuestbookController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PackageController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicInvitationController;
 use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -30,16 +32,17 @@ use Illuminate\Support\Facades\Route;
 
 // Menjadi baris ini
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/coba',function() {
+    return view('templates.baru');
+});
 
-Route::get('/classic-elegant', function () {
-    return view('templates.preview-classic-elegant');
-})->name('templates.classic-elegant');
+Route::get('/templates/preview/{template:url}', [PublicInvitationController::class, 'preview'])->name('templates.preview');
 
 Route::get('/dashboard', [HomeController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+Route::post('/undangan/{invitation}/rsvp', [GuestbookController::class, 'store'])->name('guestbook.store');
 
-// routes/web.php
 Route::get('/undangan/{invitation:slug}', [PublicInvitationController::class, 'show'])
     ->name('invitation.public.show');
 Route::get('/undangan/{invitation:slug}', [PublicInvitationController::class, 'show'])
@@ -79,6 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/gifts/{gift}', [GiftController::class, 'destroy'])->name('gift.destroy');
 
     Route::get('/invitations/create/{template}/packages', [InvitationController::class, 'showPackageSelection'])->name('invitation.packages');
+    Route::get('/invitations/{invitation}/guestbook', [InvitationController::class, 'guestbook'])->name('invitation.guestbook');
 
 
 });

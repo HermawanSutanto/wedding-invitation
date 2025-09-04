@@ -117,9 +117,6 @@
                         @if($invitation->package && $invitation->package->has_rsvp)
                         <div x-show="tab === 'amplop'"> @include('invitations.partials.form-amplop') </div>
                         @endif
-
-
-
                         <div class="mt-8 pt-5 border-t">
                             <div class="flex justify-end">
                                 {{-- 3. UBAH TOMBOL MENJADI type="button" DAN PANGGIL FUNGSI BARU --}}

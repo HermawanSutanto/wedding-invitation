@@ -163,6 +163,7 @@ class InvitationController extends Controller
             'events.*.start_time' => 'required',
             'events.*.venue_name' => 'required|string|max:255',
             'events.*.venue_address' => 'required|string',
+            'events.*.dress_code_colors' => 'nullable|json', // <-- UBAH VALIDASI INI menjadi 'json'
             'events.*.google_maps_link' => 'nullable|url',
             'events.*.livestream_link' => 'nullable|url', 
             'stories'                 => 'nullable|array',
@@ -179,7 +180,7 @@ class InvitationController extends Controller
                     }
                 },
             ],
-            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp',
             'gifts'                       => 'nullable|array',
             'gifts.*.bank_name'           => 'required|string|max:255',
             'gifts.*.account_number'      => 'required|string|max:255',
@@ -192,9 +193,6 @@ class InvitationController extends Controller
         ]);
         try {
            
-        
-        // --- LANGKAH 2: PROSES GAMBAR DAN TAMBAHKAN PATH KE ARRAY $validated ---
-
         if ($request->hasFile('groom_photo')) {
             if ($invitation->groom_photo_path) Storage::disk('public')->delete($invitation->groom_photo_path);
             $validated['groom_photo_path'] = $this->processImage($request->file('groom_photo'), 'images/invitations', 'groom_', 800, 800);
@@ -212,7 +210,6 @@ class InvitationController extends Controller
             if ($invitation->hero_image) Storage::disk('public')->delete($invitation->hero_image);
             $validated['hero_image'] = $this->processImage($request->file('hero_image'), 'images/invitations', 'hero_', 1920, 1080);
         }
-
        
            DB::transaction(function () use ($invitation, $validated, $request) {
                 $invitation->update(
@@ -272,7 +269,6 @@ class InvitationController extends Controller
             });
 
             return back()->with('success', 'Detail undangan berhasil diperbarui!');
-            dd($validated);
         } catch (\Exception $e) {
             // Catat error ke log untuk debugging
             Log::error('Gagal memperbarui undangan (ID: ' . $invitation->id . '): ' . $e->getMessage());
@@ -317,5 +313,18 @@ class InvitationController extends Controller
             Log::error('Gagal menghapus undangan (ID: ' . $invitation->id . '): ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat menghapus undangan.');
         }
+    }
+
+    public function guestbook(Invitation $invitation)
+    {
+        // Otorisasi: Pastikan hanya pemilik undangan yang bisa melihat
+        if ($invitation->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Ambil data guestbook dengan pagination
+        $guestbooks = $invitation->guestbooks()->latest()->paginate(20);
+
+        return view('invitations.guestbook', compact('invitation', 'guestbooks'));
     }
 }

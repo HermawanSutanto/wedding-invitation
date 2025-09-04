@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Kelola Paket Undangan') }}
             </h2>
-            <a href="{{ route('packages.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+            <a href="{{ route('packages.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 ...">
                 + Tambah Paket Baru
             </a>
         </div>
@@ -19,14 +19,12 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Paket</th>
+                                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Paket</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fitur Utama</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
 
-                                    <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Aksi</span>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -44,14 +42,35 @@
                                                 <div class="text-xs text-gray-500 line-through">Rp {{ number_format($package->value, 0, ',', '.') }}</div>
                                             @endif
                                         </td>
+                                        
+                                        {{-- ## PERUBAHAN UTAMA DI SINI ## --}}
                                         <td class="px-6 py-4 text-sm text-gray-500">
-                                            <div>{{ $package->count_gallery }} Foto Galeri</div>
-                                            <div>{{ $package->max_guests }} Tamu</div>
-                                            <div>{{ $package->has_love_story }} Kisah Cinta</div>
-                                            <div>{{ $package->has_live_streaming }} Live Streaming</div>
-                                            <div>{{ $package->has_music }} Musik</div>
-                                            <div>{{ $package->has_rsvp }} RSVP</div>
+                                            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                                                <span class="font-semibold text-gray-700">{{ $package->count_gallery }}</span> <span>Foto Galeri</span>
+                                                <span class="font-semibold text-gray-700">{{ $package->max_guests }}</span> <span>Tamu</span>
+                                                
+                                                <span class="{{ $package->has_love_story ? 'text-green-600' : 'text-red-500' }}">
+                                                    <i class="fas {{ $package->has_love_story ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+                                                </span>
+                                                <span>Kisah Cinta</span>
+                                                
+                                                <span class="{{ $package->has_music ? 'text-green-600' : 'text-red-500' }}">
+                                                    <i class="fas {{ $package->has_music ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+                                                </span>
+                                                <span>Musik</span>
+                                                
+                                                <span class="{{ $package->has_rsvp ? 'text-green-600' : 'text-red-500' }}">
+                                                    <i class="fas {{ $package->has_rsvp ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+                                                </span>
+                                                <span>RSVP</span>
+
+                                                <span class="{{ $package->has_live_streaming ? 'text-green-600' : 'text-red-500' }}">
+                                                    <i class="fas {{ $package->has_live_streaming ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+                                                </span>
+                                                <span>Live Stream</span>
+                                            </div>
                                         </td>
+
                                         <td class="px-6 py-4">
                                             @if($package->is_active)
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
@@ -59,7 +78,7 @@
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Nonaktif</span>
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 text-right text-sm font-medium">
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <a href="#" class="text-blue-600 hover:text-blue-900">Edit</a>
                                         {{-- GANTI LINK HAPUS DENGAN FORM INI --}}
                                             <form action="{{ route('packages.destroy', $package) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus paket ini?');">
@@ -75,8 +94,7 @@
                                         <td colspan="4" class="px-6 py-12 text-center">
                                             <p class="text-gray-500">Belum ada paket yang ditambahkan.</p>
                                         </td>
-                                    </tr>
-                                @endforelse
+                                    </tr>                                @endforelse
                             </tbody>
                         </table>
                     </div>

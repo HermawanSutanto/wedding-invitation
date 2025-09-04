@@ -14,7 +14,7 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         {{-- Mengubah warna latar belakang agar sesuai dengan tema --}}
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-rose-50">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-white-200">
             <div>
                 {{-- Mengganti logo Laravel dengan teks nama aplikasi --}}
                 <a href="/" class="font-serif text-4xl font-bold text-indigo-600">

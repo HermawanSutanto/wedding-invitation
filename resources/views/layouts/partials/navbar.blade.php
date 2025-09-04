@@ -1,17 +1,17 @@
-<header x-data="{ mobileMenuOpen: false }" class="main-header" style="position: sticky; top: 0; z-index: 1000; background: white;">
+<header x-data="{ mobileMenuOpen: false }" class="main-header">
     <div class="container main-nav">
         <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="logo">NikahYuk</a>
         
-        <div class="hidden md:flex auth-links flex items-center">
+        <div class="hidden md:flex auth-links items-center">
             @auth
                 <a href="{{ route('home') }}" class="{{ request()->is('/') ? 'active' : '' }}">Beranda</a>
                 <a href="{{ route('dashboard') }}" class="{{ request()->is('dashboard') ? 'active' : '' }}">Dasbor</a>
                 <a href="{{ route('invitation.index') }}" class="{{ request()->is('invitations*') ? 'active' : '' }}">Undangan Saya</a>
 
-                <div x-data="{ open: false }" @click.outside="open = false" class="relative ml-4">
-                    <button @click="open = !open" class="flex items-center space-x-1 focus:outline-none">
+                <div x-data="{ open: false }" @click.outside="open = false" class="relative ml-6">
+                    <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
                         <span>{{ Auth::user()->name }}</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                     </button>
                     <div x-show="open" x-transition x-cloak class="dropdown-content absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
                         <a href="{{ route('profile.edit') }}" class="dropdown-item">Profil</a>
@@ -30,14 +30,18 @@
                     </div>
                 </div>
             @else
-                <a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Log In</a>
-                <a href="{{ route('register') }}" class="{{ request()->is('register') ? 'active' : '' }}">Register</a>
+                <a href="{{ route('login') }}" class="login-button">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Log In
+                </a>
+                <a href="{{ route('register') }}" class="register-button">
+                    Register
+                </a>
             @endauth
         </div>
 
         <div class="md:hidden">
-            <button @click="mobileMenuOpen = !mobileMenuOpen">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="hamburger-button">
+                <i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
             </button>
         </div>
     </div>

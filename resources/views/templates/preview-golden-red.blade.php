@@ -1,4 +1,85 @@
+@php
 
+    // $guestName = 'Budi dan Keluarga';
+
+    // $invitation = (object) [
+    //     'id' => 1, //
+    //     'groom_name' => 'Aditya',
+    //     'bride_name' => 'Kirana',
+    //     'cover_image' => 'images/placeholder-cover.jpg', 
+    //     'hero_image' => 'images/placeholder-hero.jpg',   
+    //     'quote' => 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya diantaramu rasa kasih dan sayang.',
+    //     'quote_source' => 'QS. Ar-Rum: 21',
+    //     'groom_photo_path' => 'images/invitations/groom_1756217532.webp', 
+    //     'groom_info' => 'Bapak Subagio & Ibu Wati',
+    //     'bride_photo_path' => 'images/invitations/bride_1756217535.webp', 
+    //     'bride_info' => 'Bapak Sutrisno & Ibu Murni',
+    //     'dress_code_info' => 'Kenakan pakaian terbaik Anda dengan sentuhan warna pastel.',
+    //     'package' => (object) [
+    //         'has_love_story' => true,
+    //         'has_live_streaming' => true,
+    //         'has_rsvp' => true,
+    //         'has_music' => true,
+    //     ],
+
+    //     'stories' => [
+    //         (object) ['title' => 'Pertemuan Pertama', 'story_date' => '15 Juni 2022', 'description' => 'Kami pertama kali bertemu di sebuah acara komunitas dan langsung merasa ada kecocokan.'],
+    //         (object) ['title' => 'Lamaran', 'story_date' => '20 Desember 2024', 'description' => 'Di bawah langit senja, Aditya melamarku dan aku menjawab ya dengan penuh kebahagiaan.'],
+    //         (object) ['title' => 'Menuju Hari Bahagia', 'story_date' => 'Sekarang', 'description' => 'Kini kami mempersiapkan hari istimewa kami dan tak sabar untuk membaginya dengan Anda.'],
+    //     ],
+
+    //     'events' => [
+    //         (object) [
+    //             'title' => 'Akad Nikah',
+    //             'event_date' => '2025-11-22',
+    //             'start_time' => '09:00:00',
+    //             'venue_name' => 'Masjid Istiqlal, Jakarta Pusat',
+    //             'google_maps_link' => 'https://maps.app.goo.gl/abcdef123456',
+    //             'livestream_link' => 'https://youtube.com/live/yourstreamid', 
+    //             'dress_code_colors' => ['#e3d5d1', '#c8a18f', '#bfa06b', '#8e8d8a'], 
+    //         ],
+    //         (object) [
+    //             'title' => 'Resepsi Pernikahan',
+    //             'event_date' => '2025-11-22',
+    //             'start_time' => '19:00:00',
+    //             'venue_name' => 'Gedung Balai Kartini, Jakarta Selatan',
+    //             'google_maps_link' => 'https://maps.app.goo.gl/ghijkl789012',
+    //             'livestream_link' => null, 
+    //             'dress_code_colors' => null,
+    //         ],
+    //     ],
+
+    //     'galleries' => [
+    //         (object) ['image_path' => 'images/gallery-1.jpg'],
+    //         (object) ['image_path' => 'images/gallery-2.jpg'],
+    //         (object) ['image_path' => 'images/gallery-3.jpg'],
+    //         (object) ['image_path' => 'images/gallery-4.jpg'],
+    //         (object) ['image_path' => 'images/gallery-5.jpg'],
+    //         (object) ['image_path' => 'images/gallery-6.jpg'],
+    //     ],
+
+    //     'gifts' => [
+    //         (object) ['bank_name' => 'BCA', 'account_number' => '1234567890', 'account_holder_name' => 'Aditya Putra'],
+    //         (object) ['bank_name' => 'Mandiri', 'account_number' => '0987654321', 'account_holder_name' => 'Kirana Sari'],
+    //     ],
+
+    //     'guestbooks' => [
+    //         (object) ['name' => 'Rina & Keluarga', 'attendance_status' => 'Hadir', 'message' => 'Selamat ya, Adit dan Kirana! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Kami pasti datang!'],
+    //         (object) ['name' => 'Doni', 'attendance_status' => 'Hadir', 'message' => 'Congrats bro! Lancar sampai hari H. See you there!'],
+    //         (object) ['name' => 'Siti Aisyah', 'attendance_status' => 'Tidak Hadir', 'message' => 'Selamat menempuh hidup baru, Kirana sayang. Mohon maaf belum bisa hadir, tapi doaku selalu menyertai kalian.'],
+    //     ],
+    // ];
+    $galleryCount = count($invitation->galleries);
+    $galleryLayoutClass = 'gallery-container'; 
+
+    if ($galleryCount === 21) {
+        $galleryLayoutClass .= ' gallery-layout-21';
+    } elseif ($galleryCount === 12) {
+        $galleryLayoutClass .= ' gallery-layout-12';
+    } elseif ($galleryCount === 6) {
+        $galleryLayoutClass .= ' gallery-layout-6';
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,12 +91,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <style>
-        /* ... CSS Anda tetap sama ... */
         :root {
-            --bg-color: #fdfaf6; /* Off-white */
-            --text-color: #5d5d5d;
-            --primary-color: #c8a18f; /* Dusty Rose */
-            --gold-color: #bfa06b;
+            --bg-color: #fffaf5;         /* Latar belakang krem yang hangat */
+            --text-color: #444444;       /* Warna teks abu-abu hangat */
+            --primary-color: #8B0000;    /* MERAH MAROON sebagai warna utama */
+            --gold-color: #bfa06b;       /* EMAS sebagai warna aksen (sama seperti sebelumnya) */
             --font-heading: "Great Vibes", cursive;
             --font-body: "Poppins", sans-serif;
         }
@@ -177,12 +257,73 @@
             display: inline-block; margin-top: 15px; padding: 10px 20px;
             background: var(--text-color); color: white; text-decoration: none; border-radius: 50px;
         }
-        .gallery-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-        .gallery-item {
-            width: 100%; height: 100%; object-fit: cover; border-radius: 5px;
-            cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+        /* --- CSS BARU UNTUK GALERI DINAMIS --- */
+
+        /* Ganti style .gallery-container yang lama dengan ini */
+        .gallery-container {
+            display: grid;
+            gap: 12px;
+            /* Layout default jika jumlah gambar bukan 6, 12, atau 21 */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
         }
-        .gallery-item:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
+
+        /* Ganti nama class dari .gallery-item menjadi .gallery-image */
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style untuk pembungkus gambar */
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        /* TATA LETAK SPESIFIK */
+
+        /* Layout untuk 6 Gambar (Grid 3x2) */
+        .gallery-layout-6 {
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 280px; /* Menyamakan tinggi baris */
+        }
+        /*  */
+
+        /* Layout untuk 12 Gambar (Grid 4x3) */
+        .gallery-layout-12 {
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 250px;
+        }
+        /*  */
+
+        /* Layout untuk 21 Gambar (Kolase Dinamis) */
+        .gallery-layout-21 {
+            grid-template-columns: repeat(6, 1fr);
+            grid-auto-rows: 180px; /* Tinggi baris lebih kecil untuk kolase */
+        }
+        /* Membuat beberapa gambar menjadi lebih besar untuk variasi */
+        .gallery-layout-21 .gallery-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        .gallery-layout-21 .gallery-item:nth-child(8) {
+            grid-column: span 2;
+        }
+        .gallery-layout-21 .gallery-item:nth-child(13) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        .gallery-layout-21 .gallery-item:nth-child(19) {
+            grid-column: span 2;
+        }
         .modal {
             display: none; position: fixed; z-index: 1001; padding-top: 50px;
             left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.9);
@@ -268,8 +409,9 @@
                     {{ $invitation->groom_name }} & {{ $invitation->bride_name }}
                 </h1>
                 <p class="date">
-                    @if($invitation->events->first())
-                    {{ \Carbon\Carbon::parse($invitation->events->first()->event_date)->isoFormat('dddd, D MMMM YYYY') }}
+                    {{-- KOREKSI DI SINI --}}
+                    @if(isset($invitation->events[0]))
+                        {{ \Carbon\Carbon::parse($invitation->events[0]->event_date)->isoFormat('dddd, D MMMM YYYY') }}
                     @endif
                 </p>
             </div>
@@ -286,7 +428,7 @@
                 <div class="couple-info animate-on-scroll">
                     <img
                         src="{{ asset('storage/' . $invitation->groom_photo_path) }}"
-                        alt="Foto Mempelai Pria: {{ $invitation->groom_name }}"
+                        alt="Mempelai Pria"
                     />
                     <h3 class="script-font">{{ $invitation->groom_name }}</h3>
                     <p>Putra Pertama dari:</p>
@@ -299,7 +441,7 @@
                 >
                     <img
                         src="{{ asset('storage/' . $invitation->bride_photo_path) }}"
-                        alt="Foto Mempelai Wanita: {{ $invitation->bride_name }}"
+                        alt="Mempelai Wanita"
                     />
                     <h3 class="script-font">{{ $invitation->bride_name }}</h3>
                     <p>Putri Kedua dari:</p>
@@ -329,10 +471,11 @@
         @endif
         <section class="event animate-on-scroll" id="event">
             <h2 class="script-font">Save The Date</h2>
-            @if($invitation->events->first())
+            {{-- KOREKSI DI SINI --}}
+            @if(isset($invitation->events[0]))
             <div
                 id="countdown-timer"
-                data-event-date="{{ $invitation->events->first()->event_date }} {{ $invitation->events->first()->start_time }}"
+                data-event-date="{{ $invitation->events[0]->event_date }} {{ $invitation->events[0]->start_time }}"
             >
                 </div>
             @endif
@@ -365,7 +508,8 @@
         {{-- TAMBAHKAN SECTION BARU INI --}}
         @if($invitation->package && $invitation->package->has_live_streaming)
             @php
-                $hasLivestream = $invitation->events->some(fn($event) => !empty($event->livestream_link));
+                // KOREKSI DI SINI: Menggunakan fungsi `collect()` untuk mengakses metode `some()`
+                $hasLivestream = collect($invitation->events)->some(fn($event) => !empty($event->livestream_link));
             @endphp
 
             @if($hasLivestream)
@@ -395,13 +539,17 @@
 
         <section class="gallery animate-on-scroll" id="gallery">
             <h2 class="script-font">Our Moments</h2>
-            <div class="gallery-container">
+        
+            <div class="{{ $galleryLayoutClass }}">
                 @foreach($invitation->galleries as $galleryImage)
-                <img
-                    src="{{ asset('storage/' . $galleryImage->image_path) }}"
-                    alt="Foto Pre-wedding"
-                    class="gallery-item animate-on-scroll"
-                />
+                    {{-- Setiap gambar sekarang dibungkus div untuk layout yang lebih fleksibel --}}
+                    <div class="gallery-item animate-on-scroll">
+                        <img
+                            src="{{ asset('storage/' . $galleryImage->image_path) }}"
+                            alt="Foto Pre-wedding"
+                            class="gallery-image"
+                        />
+                    </div>
                 @endforeach
             </div>
         </section>
@@ -413,8 +561,9 @@
                 nuansa warna berikut:
             </p>
             <div class="color-palette">
-                @if($invitation->events->first() && $invitation->events->first()->dress_code_colors)
-                    @foreach($invitation->events->first()->dress_code_colors as $color)
+                {{-- KOREKSI DI SINI --}}
+                @if(isset($invitation->events[0]) && $invitation->events[0]->dress_code_colors)
+                    @foreach($invitation->events[0]->dress_code_colors as $color)
                         <div class="color-box" style="background-color: {{ $color }};"></div>
                     @endforeach
                 @else
@@ -518,7 +667,7 @@
     <button id="music-toggle" class="music-button">
         <i class="fa-solid fa-compact-disc"></i>
     </button>
-    <audio id="background-music" src="{{ asset('audio/background-music.mp3') }}" loop></audio>  
+    <audio id="background-music" src="{{ asset('audio/background-music.mp3') }}" loop></audio>  
     @endif
     <nav class="bottom-nav">
         <a href="#home"><i class="fas fa-home"></i><span>Home</span></a>
@@ -755,7 +904,7 @@
                 message: document.getElementById("wishes").value,
             };
 
-            fetch('{{ route('guestbook.store', $invitation) }}', {
+                fetch('{{ route('guestbook.store', $invitation->id) }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -793,4 +942,3 @@
     </script>
 </body>
 </html>
-

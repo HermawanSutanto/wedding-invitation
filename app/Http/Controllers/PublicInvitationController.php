@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invitation;
+use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,15 +16,16 @@ class PublicInvitationController extends Controller
         $guestName = $request->query('to', 'Tamu Undangan');
         $invitation->load(['package', 'events', 'stories', 'galleries', 'gifts', 'guestbooks']);
        // Kondisi 1: Jika undangan sudah dipublikasikan, semua orang bisa lihat.
+        $viewPath = 'templates.preview-' . $invitation->template->url;
         if ($invitation->status === 'published') {
             $invitation->load(['events', 'stories', 'galleries', 'gifts', 'guestbooks']);
-            return view('templates.preview-classic-elegant', compact('invitation','guestName')); // Pastikan path view benar
+            return view( $viewPath, compact('invitation','guestName')); // Pastikan path view benar
         }
 
         // Kondisi 2: Jika undangan masih draft, hanya pemilik yang bisa lihat (untuk pratinjau).
         if ($invitation->status === 'draft' && Auth::check() && Auth::id() === $invitation->user_id) {
             $invitation->load(['events', 'stories', 'galleries', 'gifts', 'guestbooks']);
-            return view('templates.preview-classic-elegant', compact('invitation','guestName')); 
+            return view( $viewPath, compact('invitation','guestName')); 
             
         }
         
@@ -36,5 +38,18 @@ class PublicInvitationController extends Controller
         
         
         abort(404);
+    }
+    public function preview(Template $template)
+    {
+        // Membuat path view secara dinamis
+        // Contoh: 'templates.preview-classic-elegant'
+        $viewPath = 'templates.preview-' . $template->url;
+
+        // Cek apakah file view tersebut ada
+        if (!view()->exists($viewPath)) {
+            abort(404);
+        }
+
+        return view($viewPath);
     }
 }

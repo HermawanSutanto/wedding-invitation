@@ -10,7 +10,10 @@ class Guestbook extends Model
     use HasFactory;
 
     protected $fillable = [
-        'invitation_id', 'name', 'attendance_status', 'message'
+    'invitation_id',
+    'name',
+    'attendance_status',
+    'message',
     ];
 
     public function invitation() { return $this->belongsTo(Invitation::class); }

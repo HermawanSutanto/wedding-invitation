@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>@yield('title', config('app.name', 'NikahYuk'))</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -18,7 +18,7 @@
     </head>
     <body class="font-sans antialiased" x-data="{ errorModalOpen: false, errorMessages: [] }">
         {{-- Mengubah warna latar belakang menjadi lebih lembut --}}
-        <div class="min-h-screen bg-rose-50">
+        <div class="min-h-screen bg-white-200">
             @include('layouts.partials.navbar')
 
             @if (isset($header))
@@ -32,11 +32,20 @@
             <main>
                 {{ $slot }}
             </main>
+
+            {{-- BLOK UNTUK TESTING --}}
+            @if (session('success'))
+                <div class="fixed top-10 ">
+                    Pesan Sukses Diterima: {{ session('success') }}
+                </div>
+            @endif
         </div>
          {{-- 2. Panggil komponen modal di sini --}}
         <div x-data="{ open: false, messages: [] }" 
             x-init="$watch('errorModalOpen', value => { open = value; messages = errorMessages; })">
             <x-error-modal />
         </div>
+        <x-notification />
+
     </body>
 </html>
