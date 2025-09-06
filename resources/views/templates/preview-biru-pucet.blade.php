@@ -549,42 +549,63 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const invitationData = {
-                groom_name: 'Aditya', bride_name: 'Kirana',
-                cover_image: 'https://picsum.photos/seed/cover-night/1200/1800', 
-                hero_image: 'https://picsum.photos/seed/hero-night/1920/1080',   
-                quote: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya diantaramu rasa kasih dan sayang.',
-                quote_source: 'QS. Ar-Rum: 21',
-                groom_photo_path: 'https://picsum.photos/seed/groom-night/400/400', 
-                groom_info: 'Putra Bapak Subagio & Ibu Wati',
-                bride_photo_path: 'https://picsum.photos/seed/bride-night/400/400', 
-                bride_info: 'Putri Bapak Sutrisno & Ibu Murni',
-                dress_code_info: 'Kenakan pakaian terbaik Anda dengan sentuhan warna malam yang elegan.',
-                package: { has_love_story: true, has_live_streaming: true, has_rsvp: true, has_music: true },
-                stories: [
-                    { title: 'Pertemuan Pertama', story_date: '15 Juni 2022', description: 'Di bawah langit malam yang sama, takdir mempertemukan kami dalam sebuah acara komunitas.' },
-                    { title: 'Lamaran', story_date: '20 Desember 2024', description: 'Di antara gemerlap bintang, Aditya melamarku, dan sebuah janji terucap.' },
-                    { title: 'Menuju Hari Bahagia', story_date: 'Sekarang', description: 'Kini kami menanti hari di mana bintang-bintang akan menjadi saksi cinta abadi kami.' },
-                ],
-                events: [
-                    { title: 'Akad Nikah', event_date: '2025-11-22', start_time: '09:00:00', venue_name: 'Masjid Istiqlal, Jakarta Pusat', google_maps_link: 'https://maps.app.goo.gl/abcdef123456', livestream_link: 'https://youtube.com/live/yourstreamid', dress_code_colors: ['#0a192f', '#f7d794', '#b8b5ff', '#e6f1ff'] },
-                    { title: 'Resepsi Pernikahan', event_date: '2025-11-22', start_time: '19:00:00', venue_name: 'Gedung Balai Kartini, Jakarta Selatan', google_maps_link: 'https://maps.app.goo.gl/ghijkl789012', livestream_link: null, dress_code_colors: null },
-                ],
-                galleries: [
-                    { image_path: 'https://picsum.photos/seed/gallery1-night/600/800' }, { image_path: 'https://picsum.photos/seed/gallery2-night/800/600' },
-                    { image_path: 'https://picsum.photos/seed/gallery3-night/600/600' }, { image_path: 'https://picsum.photos/seed/gallery4-night/800/600' },
-                    { image_path: 'https://picsum.photos/seed/gallery5-night/600/800' }, { image_path: 'https://picsum.photos/seed/gallery6-night/600/600' },
-                ],
-                gifts: [
-                    { bank_name: 'BCA', account_number: '1234567890', account_holder_name: 'Aditya Putra' },
-                    { bank_name: 'Mandiri', account_number: '0987654321', account_holder_name: 'Kirana Sari' },
-                ],
-                guestbooks: [
-                    { name: 'Rina & Keluarga', attendance_status: 'Hadir', message: 'Selamat ya, Adit dan Kirana! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Kami pasti datang!' },
-                    { name: 'Doni', attendance_status: 'Hadir', message: 'Congrats bro! Lancar sampai hari H. See you there!' },
-                    { name: 'Siti Aisyah', attendance_status: 'Tidak Hadir', message: 'Selamat menempuh hidup baru, Kirana sayang. Mohon maaf belum bisa hadir, tapi doaku selalu menyertai kalian.' },
-                ],
+           const dummyData = {
+            id: 2,
+            groom_name: 'Rian',
+            bride_name: 'Lestari',
+            cover_image: 'https://picsum.photos/seed/cover-rustic/1200/1800',
+            hero_image: 'https://picsum.photos/seed/hero-rustic/1920/1080',
+            quote: 'Cinta bukanlah mencari pasangan yang sempurna, tapi belajar melihat pasangan yang tidak sempurna menjadi sempurna.',
+            quote_source: 'Sam Keen',
+            groom_photo_path: 'https://picsum.photos/seed/groom-rustic/400/400',
+            groom_info: 'Putra Bapak Hartono & Ibu Sri Lestari',
+            bride_photo_path: 'https://picsum.photos/seed/bride-rustic/400/400',
+            bride_info: 'Putri Bapak Budiman & Ibu Endang',
+            dress_code_info: 'Kenakan pakaian terbaik Anda dengan sentuhan warna alam.',
+            package: { has_love_story: true, has_live_streaming: false, has_rsvp: true, has_music: true },
+            stories: [
+                { title: 'Awal Mula', story_date: '10 April 2021', description: 'Bertemu di sebuah kedai kopi, kami tidak menyangka secangkir latte akan menjadi awal dari segalanya.' },
+                { title: 'Satu Tujuan', story_date: '5 Mei 2024', description: 'Di puncak bukit yang tenang, kami berjanji untuk selalu berjalan beriringan, apapun rintangannya.' },
+                { title: 'Hari Ini', story_date: 'Sekarang', description: 'Dengan hati yang mantap, kami siap melangkah ke babak baru dan membangun masa depan bersama.' },
+            ],
+            events: [
+                {
+                    title: 'Pemberkatan',
+                    event_date: '2025-10-18',
+                    start_time: '10:00:00',
+                    venue_name: 'Gereja Katedral, Bandung',
+                    google_maps_link: 'https://maps.app.goo.gl/abcdef123456',
+                    livestream_link: null, 
+                    dress_code_colors: ['#fbf9f6', '#6b7a5a', '#e0a98f', '#4a4441'], 
+                },
+                {
+                    title: 'Syukuran & Resepsi',
+                    event_date: '2025-10-18',
+                    start_time: '18:30:00',
+                    venue_name: 'Gedong Putih, Bandung',
+                    google_maps_link: 'https://maps.app.goo.gl/ghijkl789012',
+                    livestream_link: null, dress_code_colors: null,
+                },
+            ],
+            galleries: [
+                { image_path: 'https://picsum.photos/seed/gallery1-rustic/600/800' },
+                { image_path: 'https://picsum.photos/seed/gallery2-rustic/800/600' },
+                { image_path: 'https://picsum.photos/seed/gallery3-rustic/600/600' },
+                { image_path: 'https://picsum.photos/seed/gallery4-rustic/800/600' },
+                { image_path: 'https://picsum.photos/seed/gallery5-rustic/600/900' },
+                { image_path: 'https://picsum.photos/seed/gallery6-rustic/600/600' },
+            ],
+            gifts: [
+                { bank_name: 'BRI', account_number: '1122334455', account_holder_name: 'Rian Prasetyo' },
+                { bank_name: 'BNI', account_number: '5544332211', account_holder_name: 'Lestari Indah' },
+            ],
+            guestbooks: [
+                { id: 1, name: 'Budi Santoso', attendance_status: 'Hadir', message: 'Selamat Rian dan Lestari! Turut berbahagia, semoga langgeng selamanya. Sampai jumpa di Bandung!' },
+                { id: 2, name: 'Citra', attendance_status: 'Hadir', message: 'Aaaa selamat bestie! Akhirnya ya. Lancar-lancar sampai hari H. Aku pasti dataaang!' },
+                { id: 3, name: 'Keluarga Bapak Ahmad', attendance_status: 'Tidak Hadir', message: 'Selamat menempuh hidup baru untuk kedua mempelai. Mohon maaf kami tidak bisa hadir karena ada acara keluarga di luar kota. Doa terbaik untuk kalian.' },
+            ],
             };
+            const invitationData = @json($invitation) || dummyData;
             
             const cover = document.getElementById('cover');
             const mainContent = document.getElementById('main-content');

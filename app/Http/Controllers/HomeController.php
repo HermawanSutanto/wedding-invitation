@@ -17,8 +17,30 @@ class HomeController extends Controller
     {
         // Ambil semua paket yang aktif, urutkan berdasarkan harga
         $packages = Package::where('is_active', true)->orderBy('price')->get();
+        // 2. Cari paket yang featured
+        $featuredPackage = $packages->firstWhere('is_featured', true);
 
-        return view('home', compact('packages'));
+        // 3. Jika ada paket featured, atur ulang urutannya
+        if ($featuredPackage) {
+            // Ambil semua paket yang TIDAK featured
+            // ->values() digunakan untuk mereset key array setelah filter
+            $nonFeaturedPackages = $packages->where('is_featured', false)->values();
+            
+            // Tentukan titik tengah untuk membagi paket non-featured
+            $splitPoint = floor($nonFeaturedPackages->count() / 2);
+
+            // Bagi paket non-featured menjadi dua bagian
+            $firstHalf = $nonFeaturedPackages->slice(0, $splitPoint);
+            $secondHalf = $nonFeaturedPackages->slice($splitPoint);
+
+            // 4. Gabungkan kembali dengan paket featured di tengah
+            $sortedPackages = $firstHalf->push($featuredPackage)->concat($secondHalf);
+
+        } else {
+            // Jika tidak ada yang featured, gunakan urutan asli
+            $sortedPackages = $packages;
+        }
+        return view('home', ['packages' => $sortedPackages]);
     }
 
     /**

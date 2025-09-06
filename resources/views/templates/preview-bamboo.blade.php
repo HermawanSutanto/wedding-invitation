@@ -1,9 +1,110 @@
+@php
+$data = [
+    'id' => 2,
+    'groom_name' => 'Rian',
+    'bride_name' => 'Lestari',
+    'cover_image' => 'https://picsum.photos/seed/cover-bamboo/1200/1800',
+    'hero_image' => 'https://picsum.photos/seed/hero-bamboo/1920/1080',
+    'quote' => 'Cinta bukanlah mencari pasangan yang sempurna, tapi belajar melihat pasangan yang tidak sempurna menjadi sempurna.',
+    'quote_source' => 'Sam Keen',
+    'groom_photo_path' => 'https://picsum.photos/seed/groom-bamboo/400/400',
+    'groom_info' => 'Putra Bapak Hartono & Ibu Sri Lestari',
+    'bride_photo_path' => 'https://picsum.photos/seed/bride-bamboo/400/400',
+    'bride_info' => 'Putri Bapak Budiman & Ibu Endang',
+    'dress_code_info' => 'Kenakan pakaian terbaik Anda dengan sentuhan warna alam.',
+    'package' => [
+        'has_love_story' => true,
+        'has_live_streaming' => false,
+        'has_rsvp' => true,
+        'has_music' => true
+    ],
+    'stories' => [
+        [
+            'title' => 'Awal Mula',
+            'story_date' => '10 April 2021',
+            'description' => 'Bertemu di sebuah kedai kopi, kami tidak menyangka secangkir latte akan menjadi awal dari segalanya.'
+        ],
+        [
+            'title' => 'Satu Tujuan',
+            'story_date' => '5 Mei 2024',
+            'description' => 'Di puncak bukit yang tenang, kami berjanji untuk selalu berjalan beriringan, apapun rintangannya.'
+        ],
+        [
+            'title' => 'Hari Ini',
+            'story_date' => 'Sekarang',
+            'description' => 'Dengan hati yang mantap, kami siap melangkah ke babak baru dan membangun masa depan bersama.'
+        ]
+    ],
+    'events' => [
+        [
+            'title' => 'Pemberkatan',
+            'event_date' => '2025-10-18',
+            'start_time' => '10:00:00',
+            'venue_name' => 'Gereja Katedral, Bandung',
+            'google_maps_link' => 'https://maps.app.goo.gl/abcdef123456',
+            'livestream_link' => null,
+            'dress_code_colors' => ['#fbf9f6', '#6b7a5a', '#e0a98f', '#4a4441']
+        ],
+        [
+            'title' => 'Syukuran & Resepsi',
+            'event_date' => '2025-10-18',
+            'start_time' => '18:30:00',
+            'venue_name' => 'Gedong Putih, Bandung',
+            'google_maps_link' => 'https://maps.app.goo.gl/ghijkl789012',
+            'livestream_link' => null,
+            'dress_code_colors' => null
+        ]
+    ],
+    'galleries' => [
+        ['image_path' => 'https://picsum.photos/seed/gallery1-bamboo/600/800'],
+        ['image_path' => 'https://picsum.photos/seed/gallery2-bamboo/800/600'],
+        ['image_path' => 'https://picsum.photos/seed/gallery3-bamboo/600/600'],
+        ['image_path' => 'https://picsum.photos/seed/gallery4-bamboo/800/600'],
+        ['image_path' => 'https://picsum.photos/seed/gallery5-bamboo/600/900'],
+        ['image_path' => 'https://picsum.photos/seed/gallery6-bamboo/600/600']
+    ],
+    'gifts' => [
+        [
+            'bank_name' => 'BRI',
+            'account_number' => '1122334455',
+            'account_holder_name' => 'Rian Prasetyo'
+        ],
+        [
+            'bank_name' => 'BNI',
+            'account_number' => '5544332211',
+            'account_holder_name' => 'Lestari Indah'
+        ]
+    ],
+    'guestbooks' => [
+        [
+            'id' => 1,
+            'name' => 'Budi Santoso',
+            'attendance_status' => 'Hadir',
+            'message' => 'Selamat Rian dan Lestari! Turut berbahagia, semoga langgeng selamanya. Sampai jumpa di Bandung!'
+        ],
+        [
+            'id' => 2,
+            'name' => 'Citra',
+            'attendance_status' => 'Hadir',
+            'message' => 'Aaaa selamat bestie! Akhirnya ya. Lancar-lancar sampai hari H. Aku pasti dataaang!'
+        ],
+        [
+            'id' => 3,
+            'name' => 'Keluarga Bapak Ahmad',
+            'attendance_status' => 'Tidak Hadir',
+            'message' => 'Selamat menempuh hidup baru untuk kedua mempelai. Mohon maaf kami tidak bisa hadir karena ada acara keluarga di luar kota. Doa terbaik untuk kalian.'
+        ]
+    ]
+];
+$invitation = (object) $data;
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wedding Invitation</title>
+    <title>Wedding Invitation | {{ $invitation->groom_name ?? '' }} & {{ $invitation->bride_name ?? '' }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -411,13 +512,13 @@
 <body>
     
     <!-- Cover -->
-    <div id="cover">
+    <div id="cover" style="background-image: url('{{ asset('storage/' . $invitation->cover_image) }}')">
         <div class="cover-content">
             <p class="text-lg">We Are Getting Married</p>
-            <h1 class="font-heading" id="cover-names"></h1>
+            <h1 class="font-heading">{{ $invitation->groom_name ?? '' }} & {{ $invitation->bride_name ?? '' }}</h1>
             <div class="floral-divider"></div>
             <p class="mt-8 text-sm">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
-            <h3 id="guest-name">Tamu Undangan</h3>
+            <h3 id="guest-name">{{ request('to', 'Tamu Undangan') }}</h3>
             <p class="mt-2 max-w-md text-sm">
                 Dengan penuh rasa syukur, kami mengundang Anda untuk menjadi bagian dari hari bahagia kami.
             </p>
@@ -433,11 +534,11 @@
     <!-- Main Content -->
     <main id="main-content">
         <!-- Hero Section -->
-        <header id="home">
+        <header id="home" style="background-image: url('{{ asset('storage/' . $invitation->hero_image) }}')">
             <div class="hero-content">
                 <h4 class="text-xl">The Wedding Of</h4>
-                <h1 class="font-heading" id="hero-names"></h1>
-                <p class="date" id="hero-date"></p>
+                <h1 class="font-heading">{{ $invitation->groom_name ?? '' }} & {{ $invitation->bride_name ?? '' }}</h1>
+                <p class="date">{{ $invitation->events[0] ? \Carbon\Carbon::parse($invitation->events[0]['event_date'])->locale('id')->isoFormat('dddd, D MMMM YYYY') : '' }}</p>
             </div>
         </header>
 
@@ -445,8 +546,8 @@
         <section id="quote" class="animate-on-scroll">
              <div class="container">
                 <div class="floral-divider"></div>
-                <blockquote class="text-lg md:text-xl italic max-w-3xl mx-auto" id="quote-text"></blockquote>
-                <h4 class="font-heading text-4xl mt-4" id="quote-source"></h4>
+                <blockquote class="text-lg md:text-xl italic max-w-3xl mx-auto">"{{ $invitation->quote ?? '' }}"</blockquote>
+                <h4 class="font-heading text-4xl mt-4">- {{ $invitation->quote_source ?? '' }} -</h4>
                 <div class="floral-divider"></div>
             </div>
         </section>
@@ -456,9 +557,17 @@
             <div class="container">
                 <h2 class="font-heading section-title">Sang Mempelai</h2>
                 <div id="couple-container">
-                    <!-- Groom Info will be injected here -->
+                    <div class="couple-info animate-on-scroll">
+                        <img src="{{ asset('storage/' . $invitation->groom_photo_path) }}" alt="{{ $invitation->groom_name }}">
+                        <h3 class="font-heading">{{ $invitation->groom_name }}</h3>
+                        <p>{{ $invitation->groom_info }}</p>
+                    </div>
                     <div class="couple-separator">&amp;</div>
-                    <!-- Bride Info will be injected here -->
+                    <div class="couple-info animate-on-scroll">
+                        <img src="{{ asset('storage/' . $invitation->bride_photo_path) }}" alt="{{ $invitation->bride_name }}">
+                        <h3 class="font-heading">{{ $invitation->bride_name }}</h3>
+                        <p>{{ $invitation->bride_info }}</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -469,7 +578,18 @@
                 <h2 class="font-heading section-title">Kisah Kami</h2>
                 <div id="timeline-container">
                     <div class="timeline-line"></div>
-                    <!-- Timeline items will be injected here -->
+                    @foreach($invitation->stories as $index => $story)
+                        <div class="timeline-item {{ $index % 2 === 0 ? 'left' : 'right' }} animate-on-scroll">
+                            <div class="timeline-icon">
+                                <i class="fa-solid {{ $story['title'] === 'Awal Mula' ? 'fa-mug-hot' : ($story['title'] === 'Satu Tujuan' ? 'fa-ring' : 'fa-heart') }}"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h3>{{ $story['title'] }}</h3>
+                                <p class="text-sm text-gray-500 mb-2 italic">{{ $story['story_date'] }}</p>
+                                <p>{{ $story['description'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </section>
@@ -480,7 +600,19 @@
                 <h2 class="font-heading section-title">Save The Date</h2>
                 <div class="countdown-timer" id="countdown-timer"></div>
                 <div class="events-container" id="events-container">
-                    <!-- Event cards will be injected here -->
+                    @foreach($invitation->events as $event)
+                        <div class="event-card animate-on-scroll">
+                            <div class="event-card-header">
+                                <h3 class="font-heading">{{ $event['title'] }}</h3>
+                            </div>
+                            <div class="event-card-body">
+                                <p><i class="fa-solid fa-calendar-day"></i><span>{{ \Carbon\Carbon::parse($event['event_date'])->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span></p>
+                                <p><i class="fa-solid fa-clock"></i><span>{{ substr($event['start_time'], 0, 5) }} WIB</span></p>
+                                <p><i class="fa-solid fa-map-marker-alt"></i><span>{{ $event['venue_name'] }}</span></p>
+                                <a href="{{ $event['google_maps_link'] }}" target="_blank" class="map-button action-button"><i class="fa-solid fa-map-location-dot mr-2"></i> Lihat Peta</a>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </section>
@@ -495,7 +627,11 @@
             <div class="container">
                 <h2 class="font-heading section-title">Galeri Cinta</h2>
                 <div id="gallery-grid">
-                    <!-- Gallery images will be injected here -->
+                    @foreach($invitation->galleries as $gallery)
+                        <div class="gallery-item animate-on-scroll">
+                            <img src="{{ $gallery['image_path'] }}" alt="Gallery moment" loading="lazy">
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </section>
@@ -509,10 +645,15 @@
         <!-- Dress Code Section -->
         <section id="dress-code" class="animate-on-scroll">
             <div class="container">
-                <h2 class="font-heading section-title">Panduan Busana</h2>
-                <p class="mb-6 max-w-lg mx-auto">Kehadiran Anda adalah yang utama, namun kami akan berbahagia jika Anda mengenakan busana dengan sentuhan warna berikut:</p>
-                <div class="color-palette" id="color-palette"></div>
-                <p class="italic" id="dress-code-info" style="color: #555;"></p>
+                <h2 class="font-heading section-title">Dress Code</h2>
+                <p class="mb-6 max-w-lg mx-auto">{{ $invitation->dress_code_info }}</p>
+                <div class="color-palette">
+                    @if($invitation->events->first() && $invitation->events->first()->dress_code_colors)
+                        @foreach($invitation->events->first()->dress_code_colors as $color)
+                            <div class="color-box" style="background-color: {{ $color }};"></div>
+                        @endforeach
+                    @endif
+                </div>
             </div>
         </section>
 
@@ -573,63 +714,66 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            const invitationData = {
-                id: 2,
-                groom_name: 'Rian',
-                bride_name: 'Lestari',
-                cover_image: 'https://picsum.photos/seed/cover-rustic/1200/1800',
-                hero_image: 'https://picsum.photos/seed/hero-rustic/1920/1080',
-                quote: 'Cinta bukanlah mencari pasangan yang sempurna, tapi belajar melihat pasangan yang tidak sempurna menjadi sempurna.',
-                quote_source: 'Sam Keen',
-                groom_photo_path: 'https://picsum.photos/seed/groom-rustic/400/400',
-                groom_info: 'Putra Bapak Hartono & Ibu Sri Lestari',
-                bride_photo_path: 'https://picsum.photos/seed/bride-rustic/400/400',
-                bride_info: 'Putri Bapak Budiman & Ibu Endang',
-                dress_code_info: 'Kenakan pakaian terbaik Anda dengan sentuhan warna alam.',
+           
+            const dummyData = {
+                id: 1,
+                groom_name: 'Ahmad',
+                bride_name: 'Siti',
+                cover_image: 'https://picsum.photos/seed/cover-romantic/1200/1800',
+                hero_image: 'https://picsum.photos/seed/hero-romantic/1920/1080',
+                quote: 'Cinta adalah ketika kebahagiaan orang lain lebih penting daripada kebahagiaanmu sendiri.',
+                quote_source: 'Alexandre Dumas',
+                groom_photo_path: 'https://picsum.photos/seed/groom-romantic/400/400',
+                groom_info: 'Putra dari Bapak Haji Rahman & Ibu Hj. Fatimah',
+                bride_photo_path: 'https://picsum.photos/seed/bride-romantic/400/400',
+                bride_info: 'Putri dari Bapak Drs. Suryadi & Ibu Dra. Indah',
+                dress_code_info: 'Kenakan pakaian terbaik Anda dengan sentuhan warna pastel.',
                 package: { has_love_story: true, has_live_streaming: false, has_rsvp: true, has_music: true },
                 stories: [
-                    { title: 'Awal Mula', story_date: '10 April 2021', description: 'Bertemu di sebuah kedai kopi, kami tidak menyangka secangkir latte akan menjadi awal dari segalanya.' },
-                    { title: 'Satu Tujuan', story_date: '5 Mei 2024', description: 'Di puncak bukit yang tenang, kami berjanji untuk selalu berjalan beriringan, apapun rintangannya.' },
-                    { title: 'Hari Ini', story_date: 'Sekarang', description: 'Dengan hati yang mantap, kami siap melangkah ke babak baru dan membangun masa depan bersama.' },
+                    { title: 'Pertemuan Pertama', story_date: '14 Februari 2020', description: 'Kami bertemu di sebuah kafe kecil di Jakarta. Sejak saat itu, hidup kami tak pernah sama lagi.' },
+                    { title: 'Lamaran', story_date: '14 Februari 2023', description: 'Di hari yang sama kami bertemu, aku melamarnya dengan cincin yang kubeli dari tabungan selama setahun.' },
+                    { title: 'Persiapan Pernikahan', story_date: 'Sekarang', description: 'Setelah melalui berbagai tantangan, kami siap melangkah ke babak baru kehidupan bersama.' },
                 ],
                 events: [
                     {
-                        title: 'Pemberkatan',
+                        title: 'Akad Nikah',
                         event_date: '2025-10-18',
-                        start_time: '10:00:00',
-                        venue_name: 'Gereja Katedral, Bandung',
-                        google_maps_link: 'https://maps.app.goo.gl/abcdef123456',
-                        livestream_link: null, 
-                        dress_code_colors: ['#fbf9f6', '#6b7a5a', '#e0a98f', '#4a4441'], 
+                        start_time: '08:00:00',
+                        venue_name: 'Masjid Agung Jakarta',
+                        google_maps_link: 'https://maps.app.goo.gl/example1',
+                        livestream_link: null,
+                        dress_code_colors: ['#FFB6C1', '#FFE4E1', '#FFFACD', '#E6E6FA'],
                     },
                     {
-                        title: 'Syukuran & Resepsi',
+                        title: 'Resepsi',
                         event_date: '2025-10-18',
-                        start_time: '18:30:00',
-                        venue_name: 'Gedong Putih, Bandung',
-                        google_maps_link: 'https://maps.app.goo.gl/ghijkl789012',
-                        livestream_link: null, dress_code_colors: null,
+                        start_time: '18:00:00',
+                        venue_name: 'Hotel Grand Ballroom',
+                        google_maps_link: 'https://maps.app.goo.gl/example2',
+                        livestream_link: null,
+                        dress_code_colors: null,
                     },
                 ],
                 galleries: [
-                    { image_path: 'https://picsum.photos/seed/gallery1-rustic/600/800' },
-                    { image_path: 'https://picsum.photos/seed/gallery2-rustic/800/600' },
-                    { image_path: 'https://picsum.photos/seed/gallery3-rustic/600/600' },
-                    { image_path: 'https://picsum.photos/seed/gallery4-rustic/800/600' },
-                    { image_path: 'https://picsum.photos/seed/gallery5-rustic/600/900' },
-                    { image_path: 'https://picsum.photos/seed/gallery6-rustic/600/600' },
+                    { image_path: 'https://picsum.photos/seed/gallery1-romantic/600/800' },
+                    { image_path: 'https://picsum.photos/seed/gallery2-romantic/800/600' },
+                    { image_path: 'https://picsum.photos/seed/gallery3-romantic/600/600' },
+                    { image_path: 'https://picsum.photos/seed/gallery4-romantic/800/600' },
+                    { image_path: 'https://picsum.photos/seed/gallery5-romantic/600/900' },
+                    { image_path: 'https://picsum.photos/seed/gallery6-romantic/600/600' },
                 ],
                 gifts: [
-                    { bank_name: 'BRI', account_number: '1122334455', account_holder_name: 'Rian Prasetyo' },
-                    { bank_name: 'BNI', account_number: '5544332211', account_holder_name: 'Lestari Indah' },
+                    { bank_name: 'BCA', account_number: '1234567890', account_holder_name: 'Ahmad Rahman' },
+                    { bank_name: 'Mandiri', account_number: '0987654321', account_holder_name: 'Siti Indah' },
                 ],
                 guestbooks: [
-                    { id: 1, name: 'Budi Santoso', attendance_status: 'Hadir', message: 'Selamat Rian dan Lestari! Turut berbahagia, semoga langgeng selamanya. Sampai jumpa di Bandung!' },
-                    { id: 2, name: 'Citra', attendance_status: 'Hadir', message: 'Aaaa selamat bestie! Akhirnya ya. Lancar-lancar sampai hari H. Aku pasti dataaang!' },
-                    { id: 3, name: 'Keluarga Bapak Ahmad', attendance_status: 'Tidak Hadir', message: 'Selamat menempuh hidup baru untuk kedua mempelai. Mohon maaf kami tidak bisa hadir karena ada acara keluarga di luar kota. Doa terbaik untuk kalian.' },
+                    { id: 1, name: 'Budi Santoso', attendance_status: 'Hadir', message: 'Selamat Ahmad dan Siti! Semoga langgeng sampai maut memisahkan. Sampai jumpa di acara!' },
+                    { id: 2, name: 'Ani', attendance_status: 'Hadir', message: 'Aaaa selamat ya! Akhirnya menikah juga. Lancar-lancar sampai hari H. Aku pasti datang!' },
+                    { id: 3, name: 'Keluarga Pak RT', attendance_status: 'Tidak Hadir', message: 'Selamat menempuh hidup baru. Mohon maaf kami tidak bisa hadir karena ada acara keluarga di luar kota. Doa terbaik untuk kalian.' },
                 ],
             };
+            const invitationData = @json($invitation) || dummyData;
+
             
             const cover = document.getElementById('cover');
             const mainContent = document.getElementById('main-content');
@@ -698,8 +842,25 @@
                 
                 // Dress Code
                 const colorPalette = document.getElementById('color-palette');
-                const colors = events[0]?.dress_code_colors || ['#fbf9f6', '#6b7a5a', '#e0a98f', '#4a4441'];
-                colors.forEach(color => colorPalette.innerHTML += `<div class="color-box" style="background-color: ${color};"></div>`);
+                if (colorPalette) {
+                    let colors = [];
+                    const rawColors = events[0]?.dress_code_colors;
+
+                    if (Array.isArray(rawColors)) {
+                        colors = rawColors; // Gunakan langsung jika sudah array
+                    } else if (typeof rawColors === 'string' && rawColors.trim() !== '') {
+                        colors = rawColors.split(',').map(c => c.trim()); // Ubah string menjadi array
+                    } else {
+                        colors = ['#e3d5d1', '#C0A062', '#6B8A99', '#F8F9FA']; // Fallback jika kosong
+                    }
+                    
+                    // Mengisi palet warna dengan cara yang lebih efisien
+                    colorPalette.innerHTML = colors.map(c => `<div class="color-box" style="background-color: ${c};"></div>`).join('');
+                }
+
+                if(document.getElementById('dress-code-info')) {
+                    document.getElementById('dress-code-info').textContent = dress_code_info;
+                }
                 document.getElementById('dress-code-info').textContent = dress_code_info;
 
                 // Gifts & RSVP

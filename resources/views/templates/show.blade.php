@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- SEO Title & Description Dinamis --}}
+    <title>Undangan Pernikahan | {{ $invitation->groom_name }} & {{ $invitation->bride_name }}</title>
+    @if($invitation->events->first())
+        <meta name="description" content="Kami mengundang Anda untuk hadir di acara pernikahan {{ $invitation->groom_name }} & {{ $invitation->bride_name }} pada {{ \Carbon\Carbon::parse($invitation->events->first()->event_date)->isoFormat('D MMMM YYYY') }}.">
+    @endif
+
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <style>
+        :root {
+            --bg-color: #fdfaf6;
+            --text-color: #5d5d5d;
+            --primary-color: #c8a18f;
+            --gold-color: #bfa06b;
+            --font-heading: "Great Vibes", cursive;
+            --font-body: "Poppins", sans-serif;
+        }
+        body { font-family: var(--font-body); margin: 0; color: var(--text-color); background-color: var(--bg-color); overflow: hidden; }
+        h1, h2, h3, h4 { font-weight: 400; }
+        .script-font { font-family: var(--font-heading); color: var(--primary-color); }
+        h2.script-font { font-size: 3.5em; margin-bottom: 20px; }
+        section { padding: 80px 20px; text-align: center; overflow: hidden; position: relative; }
+        .cover { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; text-align: center; color: white; z-index: 1000; transition: opacity 1.5s ease-out; }
+        .cover::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); }
+        .cover-content { position: relative; z-index: 1; padding: 20px; }
+        .cover h1 { font-size: 5em; margin: 10px 0; color: white; }
+        #guest-name { font-size: 1.5em; color: var(--gold-color); font-weight: 600; margin-top: 20px; }
+        #open-invitation { margin-top: 20px; padding: 12px 25px; background: var(--primary-color); color: white; border: none; border-radius: 50px; font-size: 1em; cursor: pointer; transition: transform 0.3s; }
+        #open-invitation:hover { transform: scale(1.05); }
+        .hero { background-attachment: fixed; height: 100vh; display: flex; justify-content: center; align-items: center; color: white; text-align: center; }
+        .hero::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); }
+        .hero-content { position: relative; z-index: 1; }
+        .hero h1 { font-size: 6em; margin: 0; color: white; }
+        .hero .date { font-size: 1.5em; margin-top: 10px; letter-spacing: 2px; }
+        .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+        .couple { background: white; }
+        .couple-container { display: flex; justify-content: center; align-items: center; gap: 30px; flex-wrap: wrap; }
+        .couple-info img { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 8px solid var(--bg-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        .couple-info h3 { font-size: 3em; margin: 15px 0 5px 0; }
+        .couple-separator { font-size: 6em; }
+        .love-story { background-color: var(--bg-color); }
+        .timeline { position: relative; max-width: 800px; margin: 0 auto; }
+        .timeline::after { content: ""; position: absolute; width: 2px; background-color: var(--primary-color); top: 0; bottom: 0; left: 50%; margin-left: -1px; }
+        .timeline-item { padding: 10px 40px; position: relative; width: 50%; box-sizing: border-box; }
+        .timeline-item::after { content: ""; position: absolute; width: 16px; height: 16px; right: -8px; background-color: var(--bg-color); border: 3px solid var(--primary-color); top: 20px; border-radius: 50%; z-index: 1; }
+        .timeline-item.left { left: 0; text-align: right; }
+        .timeline-item.right { left: 50%; text-align: left; }
+        .timeline-item.right::after { left: -8px; }
+        .timeline-content { padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+        .guestbook-container { max-width: 700px; margin: 0 auto; max-height: 400px; overflow-y: auto; padding: 10px; border-top: 1px solid #ddd; }
+        .guestbook-entry { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: left; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); }
+        .guestbook-entry .name { font-weight: 600; color: var(--primary-color); }
+        .guestbook-entry .attendance { font-size: 0.8em; font-style: italic; color: #999; margin-left: 8px; }
+        .guestbook-entry .message { margin-top: 8px; }
+        .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-around; padding: 10px 0; z-index: 999; }
+        .bottom-nav a { color: var(--primary-color); text-decoration: none; text-align: center; font-size: 0.7em; }
+        .bottom-nav a i { font-size: 1.5em; display: block; margin-bottom: 2px; }
+        #music-toggle { position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background-color: var(--primary-color); color: white; border: none; border-radius: 50%; font-size: 1.2em; cursor: pointer; z-index: 999; animation: spin 8s linear infinite; display: flex; justify-content: center; align-items: center; }
+        #music-toggle.paused { animation-play-state: paused; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .quote { background-color: var(--bg-color); font-style: italic; font-size: 1.2em; max-width: 800px; margin: 0 auto; }
+        #countdown-timer { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        .time-box { background: var(--bg-color); padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); }
+        .time-box span { display: block; font-size: 2em; font-weight: bold; color: var(--primary-color); }
+        .time-box span:last-child { font-size: 1em; font-weight: 300; color: var(--text-color); }
+        .event-container { display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap; }
+        .event-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); width: 300px; border-top: 4px solid var(--primary-color); }
+        .map-button { display: inline-block; margin-top: 15px; padding: 10px 20px; background: var(--text-color); color: white; text-decoration: none; border-radius: 50px; }
+        .gallery-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .gallery-item { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
+        .gallery-item:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
+        .modal { display: none; position: fixed; z-index: 1001; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.9); }
+        .modal-content { margin: auto; display: block; width: 80%; max-width: 700px; }
+        .close-modal { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; }
+        .gift { background-color: white; }
+        .gift-card { background: var(--bg-color); max-width: 400px; margin: 20px auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); }
+        .copy-button { margin-top: 15px; padding: 10px 20px; border: none; background-color: var(--primary-color); color: white; border-radius: 5px; cursor: pointer; }
+        .rsvp { background: var(--bg-color); }
+        #rsvp-form { display: flex; flex-direction: column; gap: 15px; max-width: 500px; margin: 0 auto; }
+        #rsvp-form input, #rsvp-form select, #rsvp-form textarea { padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1em; font-family: var(--font-body); }
+        #rsvp-form button { padding: 15px; border: none; background: var(--primary-color); color: white; font-size: 1em; border-radius: 50px; cursor: pointer; transition: background-color 0.3s; }
+        #rsvp-form button:hover { background-color: var(--gold-color); }
+        footer { text-align: center; padding: 40px 20px; background: var(--text-color); color: #fdfaf6; }
+        .mb-6 { margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body style="background: url('{{ $invitation->hero_image ? asset('storage/' . $invitation->hero_image) : '' }}') no-repeat center center/cover; background-attachment: fixed;">
+
+    <div class="cover" id="cover" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : '' }}') no-repeat center center/cover;">
+        <div class="cover-content">
+            <h4>The Wedding Of</h4>
+            <h1 class="script-font">{{ $invitation->groom_name }} & {{ $invitation->bride_name }}</h1>
+            <p>Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+            <h3 id="guest-name">{{ $guestName }}</h3>
+            <p>Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir di acara pernikahan kami.</p>
+            <button id="open-invitation"><i class="fa-solid fa-envelope-open"></i> Buka Undangan</button>
+        </div>
+    </div>
+
+    <main id="main-content" style="display: none;">
+        <header class="hero" id="home" style="background: url('{{ $invitation->hero_image ? asset('storage/' . $invitation->hero_image) : '' }}') no-repeat center center/cover; background-attachment: fixed;">
+            <div class="hero-content">
+                <h4>You're Invited To The Wedding Of</h4>
+                <h1 class="script-font">{{ $invitation->groom_name }} & {{ $invitation->bride_name }}</h1>
+                @if($invitation->events->first())
+                <p class="date">{{ \Carbon\Carbon::parse($invitation->events->first()->event_date)->isoFormat('dddd, D MMMM YYYY') }}</p>
+                @endif
+            </div>
+        </header>
+
+        <section class="quote animate-on-scroll">
+            <p>"{{ $invitation->quote }}"</p>
+            <h4 class="script-font">({{ $invitation->quote_source }})</h4>
+        </section>
+
+        <section class="couple animate-on-scroll" id="couple">
+            <h2 class="script-font">The Bride & Groom</h2>
+            <div class="couple-container">
+                <div class="couple-info animate-on-scroll">
+                    <img src="{{ $invitation->groom_photo_path ? asset('storage/' . $invitation->groom_photo_path) : 'https://placehold.co/400x400' }}" alt="Foto Mempelai Pria: {{ $invitation->groom_name }}" />
+                    <h3 class="script-font">{{ $invitation->groom_name }}</h3>
+                    <p>{{ $invitation->groom_info }}</p>
+                </div>
+                <div class="couple-separator script-font">&</div>
+                <div class="couple-info animate-on-scroll" style="transition-delay: 0.2s;">
+                    <img src="{{ $invitation->bride_photo_path ? asset('storage/' . $invitation->bride_photo_path) : 'https://placehold.co/400x400' }}" alt="Foto Mempelai Wanita: {{ $invitation->bride_name }}" />
+                    <h3 class="script-font">{{ $invitation->bride_name }}</h3>
+                    <p>{{ $invitation->bride_info }}</p>
+                </div>
+            </div>
+        </section>
+        
+        @if($invitation->package && $invitation->package->has_love_story && $invitation->stories->isNotEmpty())
+        <section class="love-story animate-on-scroll" id="story">
+            <h2 class="script-font">Our Love Story</h2>
+            <div class="timeline">
+                @foreach($invitation->stories as $index => $story)
+                <div class="timeline-item {{ $index % 2 == 0 ? 'left' : 'right' }} animate-on-scroll">
+                    <div class="timeline-content">
+                        <h3>{{ $story->title }}</h3>
+                        <p>{{ $story->story_date }} - {{ $story->description }}</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
+        <section class="event animate-on-scroll" id="event">
+            <h2 class="script-font">Save The Date</h2>
+            @if($invitation->events->first())
+            <div id="countdown-timer" data-event-date="{{ $invitation->events->first()->event_date }} {{ $invitation->events->first()->start_time }}"></div>
+            @endif
+            <div class="event-container">
+                @foreach($invitation->events as $event)
+                <div class="event-card animate-on-scroll">
+                    <h3>{{ $event->title }}</h3>
+                    <p><i class="fa-solid fa-calendar-day"></i> {{ \Carbon\Carbon::parse($event->event_date)->isoFormat('dddd, D MMMM YYYY') }}</p>
+                    <p><i class="fa-solid fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }} WIB</p>
+                    <p><i class="fa-solid fa-map-marker-alt"></i> {{ $event->venue_name }}</p>
+                    <a href="{{ $event->google_maps_link }}" target="_blank" class="map-button">Lihat Peta</a>
+                </div>
+                @endforeach
+            </div>
+        </section>
+
+        @if($invitation->package && $invitation->package->has_live_streaming && $invitation->events->some(fn($event) => !empty($event->livestream_link)))
+        <section class="livestream animate-on-scroll" id="livestream">
+            <h2 class="script-font">Live Streaming</h2>
+            <p class="mb-6">Bagi Anda yang tidak dapat hadir, kami mengundang Anda untuk menyaksikan siaran langsung pernikahan kami.</p>
+            <div class="event-container">
+                @foreach($invitation->events as $event)
+                    @if($event->livestream_link)
+                    <div class="event-card">
+                        <h3>{{ $event->title }}</h3>
+                        <p><i class="fa-solid fa-video mr-2"></i> Tonton Siaran Langsung</p>
+                        <a href="{{ $event->livestream_link }}" target="_blank" class="map-button mt-4">Tonton Sekarang</a>
+                    </div>
+                    @endif
+                @endforeach
+            </div>
+        </section>
+        @endif
+
+        @php $photoLimit = $invitation->package->count_gallery ?? 0; @endphp
+        @if($photoLimit > 0 && $invitation->galleries->isNotEmpty())
+        <section class="gallery animate-on-scroll" id="gallery">
+            <h2 class="script-font">Our Moments</h2>
+            <div class="gallery-container">
+                @foreach($invitation->galleries->take($photoLimit) as $galleryImage)
+                <img src="{{ asset('storage/' . $galleryImage->image_path) }}" alt="Foto Pre-wedding" class="gallery-item animate-on-scroll"/>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
+        @if($invitation->package && $invitation->package->has_rsvp)
+        <section class="gift animate-on-scroll">
+            <h2 class="script-font">Wedding Gift</h2>
+            <p>Doa restu Anda adalah hadiah terindah. Namun, jika Anda ingin memberikan tanda kasih, kami telah menyediakan amplop digital.</p>
+            @foreach($invitation->gifts as $gift)
+            <div class="gift-card animate-on-scroll">
+                <h4><i class="fa-solid fa-building-columns"></i> {{ $gift->bank_name }}</h4>
+                <p id="account-number">{{ $gift->account_number }}</p>
+                <p>a.n. {{ $gift->account_holder_name }}</p>
+                <button class="copy-button" data-account="{{ $gift->account_number }}"><i class="fa-solid fa-copy"></i> Salin Rekening</button>
+            </div>
+            @endforeach
+        </section>
+
+        <section class="rsvp animate-on-scroll" id="rsvp">
+            <h2 class="script-font">Are you Attending?</h2>
+            <form id="rsvp-form">
+                <input type="text" id="name" placeholder="Nama Anda" required />
+                <select id="attendance" required>
+                    <option value="">Konfirmasi Kehadiran</option>
+                    <option value="Hadir">Saya akan Hadir</option>
+                    <option value="Tidak Hadir">Maaf, Tidak Bisa Hadir</option>
+                </select>
+                <textarea id="wishes" placeholder="Tulis ucapan dan doa Anda..." rows="4" required></textarea>
+                <button type="submit">Kirim Ucapan</button>
+            </form>
+        </section>
+
+        <section class="guestbook animate-on-scroll">
+            <h2 class="script-font">Ucapan & Doa</h2>
+            <div class="guestbook-container" id="guestbook-container">
+                @forelse($invitation->guestbooks as $guestbookEntry)
+                <div class="guestbook-entry">
+                    <div class="header">
+                        <span class="name">{{ $guestbookEntry->name }}</span>
+                        <span class="attendance"><i class="fa-solid fa-circle-check"></i> {{ $guestbookEntry->attendance_status }}</span>
+                    </div>
+                    <p class="message">{{ $guestbookEntry->message }}</p>
+                </div>
+                @empty
+                <p class="text-center text-gray-500 no-wishes">Jadilah yang pertama memberikan ucapan & doa!</p>
+                @endforelse
+            </div>
+        </section>
+        @endif
+
+        <footer>
+            <p>Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
+            <p class="script-font" style="font-size: 2.5em; margin: 20px 0;">{{ $invitation->groom_name }} & {{ $invitation->bride_name }}</p>
+            <p>© {{ date('Y') }}. Dibuat dengan ❤.</p>
+        </footer>
+    </main>
+
+    <div id="gallery-modal" class="modal">
+        <span class="close-modal">×</span>
+        <img class="modal-content" id="modal-image" />
+    </div>
+
+    @if($invitation->package && $invitation->package->has_music)
+    <button id="music-toggle" class="music-button"><i class="fa-solid fa-compact-disc"></i></button>
+    <audio id="background-music" src="{{ asset('audio/background-music.mp3') }}" loop></audio>  
+    @endif
+    
+    <nav class="bottom-nav">
+        <a href="#home"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#couple"><i class="fas fa-heart"></i><span>Couple</span></a>
+        <a href="#event"><i class="fas fa-calendar-check"></i><span>Event</span></a>
+        @if($photoLimit > 0 && $invitation->galleries->isNotEmpty())
+        <a href="#gallery"><i class="fas fa-images"></i><span>Gallery</span></a>
+        @endif
+        @if($invitation->package && $invitation->package->has_rsvp)
+        <a href="#rsvp"><i class="fas fa-envelope"></i><span>RSVP</span></a>
+        @endif
+    </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const openButton = document.getElementById("open-invitation");
+            const cover = document.getElementById("cover");
+            const mainContent = document.getElementById("main-content");
+            const audio = document.getElementById("background-music");
+            const musicToggleButton = document.getElementById("music-toggle");
+
+            openButton.addEventListener("click", () => {
+                cover.style.opacity = "0";
+                setTimeout(() => { cover.style.display = "none"; }, 1500);
+                mainContent.style.display = "block";
+                document.body.style.overflow = "auto";
+                if (audio) {
+                    audio.play().catch(e => console.error("Autoplay diblokir oleh browser."));
+                    if(musicToggleButton) musicToggleButton.classList.remove("paused");
+                }
+            });
+
+            if (musicToggleButton && audio) {
+                musicToggleButton.addEventListener("click", () => {
+                    if (audio.paused) {
+                        audio.play();
+                        musicToggleButton.classList.remove("paused");
+                    } else {
+                        audio.pause();
+                        musicToggleButton.classList.add("paused");
+                    }
+                });
+            }
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) entry.target.classList.add("visible");
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll(".animate-on-scroll").forEach((el) => observer.observe(el));
+
+            const countdown = () => {
+                const countDateElement = document.getElementById("countdown-timer");
+                if (!countDateElement) return;
+                const eventDateString = countDateElement.dataset.eventDate;
+                const countDate = new Date(eventDateString).getTime();
+                const now = new Date().getTime();
+                const gap = countDate - now;
+                const timerContainer = document.getElementById("countdown-timer");
+                if (gap > 0) {
+                    const d = Math.floor(gap / 86400000);
+                    const h = Math.floor((gap % 86400000) / 3600000);
+                    const m = Math.floor((gap % 3600000) / 60000);
+                    const s = Math.floor((gap % 60000) / 1000);
+                    timerContainer.innerHTML = `<div class="time-box"><span>${d}</span><span>Hari</span></div><div class="time-box"><span>${h}</span><span>Jam</span></div><div class="time-box"><span>${m}</span><span>Menit</span></div><div class="time-box"><span>${s}</span><span>Detik</span></div>`;
+                } else {
+                    timerContainer.innerHTML = "<h4>Acara Telah Berlangsung</h4>";
+                }
+            };
+            setInterval(countdown, 1000);
+
+            const modal = document.getElementById("gallery-modal");
+            const modalImg = document.getElementById("modal-image");
+            document.querySelectorAll(".gallery-item").forEach((item) => {
+                item.addEventListener("click", () => {
+                    modal.style.display = "block";
+                    modalImg.src = item.src;
+                });
+            });
+            document.querySelector(".close-modal").addEventListener("click", () => (modal.style.display = "none"));
+            window.addEventListener("click", (e) => {
+                if (e.target == modal) modal.style.display = "none";
+            });
+
+            document.querySelectorAll(".copy-button").forEach((button) => {
+                button.addEventListener("click", () => {
+                    navigator.clipboard.writeText(button.dataset.account).then(() => {
+                        button.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+                        setTimeout(() => { button.innerHTML = '<i class="fa-solid fa-copy"></i> Salin Rekening'; }, 2000);
+                    });
+                });
+            });
+
+            const rsvpForm = document.getElementById("rsvp-form");
+            if (rsvpForm) {
+                rsvpForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    const btn = this.querySelector('button[type="submit"]');
+                    btn.disabled = true;
+                    btn.textContent = 'Mengirim...';
+                    
+                    const formData = {
+                        name: document.getElementById("name").value,
+                        attendance_status: document.getElementById("attendance").value,
+                        message: document.getElementById("wishes").value,
+                    };
+
+                    fetch('{{ route('guestbook.store', $invitation) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Logic to display new entry
+                            const guestbookContainer = document.getElementById("guestbook-container");
+                            const newEntry = document.createElement('div');
+                            newEntry.className = 'guestbook-entry';
+                            newEntry.innerHTML = `<div class="header"><span class="name">${data.entry.name}</span><span class="attendance"><i class="fa-solid fa-circle-check"></i> ${data.entry.attendance_status}</span></div><p class="message">${data.entry.message}</p>`;
+                            guestbookContainer.prepend(newEntry);
+                            this.reset();
+                            alert('Terima kasih atas konfirmasi dan ucapannya!');
+                        } else {
+                            let errors = Object.values(data.errors).join("\n");
+                            alert('Harap perbaiki kesalahan berikut:\n' + errors);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan. Silakan coba lagi.');
+                    })
+                    .finally(() => {
+                        btn.disabled = false;
+                        btn.textContent = 'Kirim Ucapan';
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

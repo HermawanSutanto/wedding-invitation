@@ -1,0 +1,615 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- Custom CSS for Monochrome Modern Magazine/Gallery Theme --- */
+
+:root {
+    --primary-font: "Playfair Display", serif; /* Contoh font elegan */
+    --secondary-font: "Raleway", sans-serif; /* Contoh font modern */
+    --text-color: #333;
+    --bg-color: #f8f8f8;
+    --light-gray: #e0e0e0;
+    --dark-gray: #666;
+    --accent-color: #a3a3a3; /* Sedikit aksen abu-abu */
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--secondary-font);
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    line-height: 1.6;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--primary-font);
+    color: #222;
+    margin-bottom: 0.5em;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 3.5rem; /* Ukuran besar untuk judul utama */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+h2 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--light-gray);
+    padding-bottom: 0.5em;
+    margin-bottom: 1.5em;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+}
+
+a {
+    color: var(--dark-gray);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--accent-color);
+}
+
+section {
+    padding: 6rem 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+section:last-of-type {
+    border-bottom: none;
+}
+
+/* --- Header / Hero --- */
+#home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #000
+        url("https://source.unsplash.com/random/1600x900/?wedding,black-white")
+        no-repeat center center/cover; /* Placeholder BW image */
+    color: #fff;
+    position: relative;
+    padding: 2rem;
+}
+
+#home::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4); /* Overlay gelap */
+    z-index: 1;
+}
+
+#home > * {
+    z-index: 2;
+    position: relative;
+}
+
+#home h1 {
+    color: #fff;
+    margin-bottom: 1rem;
+    font-size: 4rem;
+}
+
+#home p {
+    font-size: 1.5rem;
+    color: #ddd;
+    margin-top: 0.5rem;
+}
+
+/* Navigation (contoh, jika ingin menambahkan nav) */
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(-100%); /* Sembunyikan secara default */
+}
+
+.main-nav.show {
+    transform: translateY(0);
+}
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 2rem;
+}
+
+.main-nav a {
+    font-family: var(--secondary-font);
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 0;
+}
+
+/* --- Quote Section --- */
+#quote blockquote {
+    font-family: var(--primary-font);
+    font-size: 2rem;
+    font-style: italic;
+    text-align: center;
+    color: var(--dark-gray);
+    margin: 2rem auto;
+    max-width: 700px;
+    line-height: 1.5;
+    position: relative;
+}
+
+#quote blockquote::before,
+#quote blockquote::after {
+    content: '"';
+    font-size: 4rem;
+    line-height: 0;
+    position: absolute;
+    color: var(--light-gray);
+}
+
+#quote blockquote::before {
+    top: 0;
+    left: -1rem;
+}
+
+#quote blockquote::after {
+    bottom: 0;
+    right: -1rem;
+}
+
+#quote p {
+    text-align: center;
+    font-style: italic;
+    color: var(--dark-gray);
+}
+
+/* --- Couple Section --- */
+#couple {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    text-align: center;
+}
+
+#couple > div {
+    flex: 1 1 300px;
+    max-width: 450px;
+}
+
+#couple img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--light-gray);
+    margin-bottom: 1.5rem;
+    filter: grayscale(100%); /* Monochrome effect */
+    transition: filter 0.3s ease;
+}
+
+#couple img:hover {
+    filter: grayscale(0%); /* Warna saat hover */
+}
+
+#couple h3 {
+    margin-bottom: 0.5rem;
+    font-size: 2.2rem;
+}
+
+#couple p {
+    color: var(--dark-gray);
+    font-size: 1.1rem;
+}
+
+/* --- Story Section --- */
+#story article {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px dashed var(--light-gray);
+}
+
+#story article:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+#story h3 {
+    font-size: 2rem;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+}
+
+#story p small {
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    font-style: italic;
+}
+
+/* --- Event Section --- */
+#event article {
+    background-color: #fff;
+    border: 1px solid var(--light-gray);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#event article:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+#event article h3 {
+    font-size: 2.2rem;
+    color: #222;
+    margin-bottom: 1rem;
+}
+
+#event article p {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+#event article a {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--dark-gray);
+    color: #fff;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+#event article a:hover {
+    background-color: var(--accent-color);
+}
+
+/* --- Live Streaming --- */
+#livestream p {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+#livestream a {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--dark-gray);
+    color: #fff;
+    border-radius: 5px;
+}
+
+#livestream a:hover {
+    background-color: var(--accent-color);
+}
+
+/* --- Gallery Section --- */
+#gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+#gallery figure {
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    background-color: #eee;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#gallery img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(100%) contrast(1.1); /* Efek monokrom lebih kuat */
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+#gallery img:hover {
+    transform: scale(1.05);
+    filter: grayscale(0%) contrast(1); /* Warna saat hover */
+}
+
+/* --- Gift Section --- */
+#gift > div {
+    background-color: #fff;
+    border: 1px solid var(--light-gray);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+#gift p {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+#gift span {
+    font-weight: bold;
+    color: var(--dark-gray);
+}
+
+/* --- RSVP Form --- */
+#rsvp form {
+    background-color: #fff;
+    border: 1px solid var(--light-gray);
+    padding: 3rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#rsvp form div {
+    margin-bottom: 1.5rem;
+}
+
+#rsvp form label {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+    font-size: 1.1rem;
+}
+
+#rsvp form input[type="text"],
+#rsvp form select,
+#rsvp form textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 5px;
+    font-family: var(--secondary-font);
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+#rsvp form input:focus,
+#rsvp form select:focus,
+#rsvp form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+#rsvp form textarea {
+    resize: vertical;
+}
+
+#rsvp form button {
+    display: block;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background-color: var(--dark-gray);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#rsvp form button:hover {
+    background-color: var(--accent-color);
+}
+
+#rsvp .success-message,
+#rsvp .error-message {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-weight: 600;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+#rsvp .success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+#rsvp .error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* --- Guestbook --- */
+#guestbook {
+    background-color: #f0f0f0;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+#guestbook h2 {
+    color: #222;
+    margin-bottom: 2.5rem;
+}
+
+#guestbook article {
+    background-color: #fff;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--light-gray);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    position: relative;
+}
+
+#guestbook article::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: var(--accent-color);
+}
+
+#guestbook article p {
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+}
+
+#guestbook article strong {
+    color: #222;
+    font-weight: 700;
+}
+
+#guestbook article small {
+    display: block;
+    margin-top: 1rem;
+    color: var(--dark-gray);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background-color: #222;
+    color: #eee;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+}
+
+footer p {
+    margin: 0.5rem 0;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.8rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    section {
+        padding: 4rem 1rem;
+    }
+
+    #home {
+        padding: 1rem;
+    }
+
+    #home h1 {
+        font-size: 3rem;
+    }
+
+    #home p {
+        font-size: 1.2rem;
+    }
+
+    #couple {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    #couple > div {
+        max-width: 100%;
+    }
+
+    #quote blockquote {
+        font-size: 1.5rem;
+    }
+
+    #quote blockquote::before,
+    #quote blockquote::after {
+        font-size: 3rem;
+    }
+
+    #gallery {
+        grid-template-columns: 1fr;
+    }
+
+    #rsvp form {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    #home h1 {
+        font-size: 2.5rem;
+    }
+
+    #home p {
+        font-size: 1rem;
+    }
+
+    .main-nav ul {
+        gap: 1rem;
+    }
+
+    .main-nav a {
+        font-size: 0.8rem;
+    }
+
+    #couple img {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+/* --- Font Imports (Anda bisa mengganti atau menghapus ini) --- */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600;700&display=swap");

@@ -74,6 +74,7 @@ class InvitationController extends Controller
                     'start_time'    => '09:00',
                     'venue_name'    => 'Nama Lokasi',
                     'venue_address' => 'Alamat Lengkap Lokasi',
+                    'dress_code_colors' => '#ffffff',
                     'google_maps_link' => '',
                     'livestream_link' => '',
                 ]);

@@ -1,4 +1,10 @@
-
+@php
+    // Logika untuk menentukan action form dengan aman
+    $formAction = '#'; // Default action jika tidak ada undangan
+    if (isset($invitation) && !empty($invitation->id)) {
+        $formAction = route('guestbook.store', $invitation);
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -286,7 +292,7 @@
                 <div class="couple-info animate-on-scroll">
                     <img
                         src="{{ asset('storage/' . $invitation->groom_photo_path) }}"
-                        alt="Foto Mempelai Pria: {{ $invitation->groom_name }}"
+                        alt="Mempelai Pria"
                     />
                     <h3 class="script-font">{{ $invitation->groom_name }}</h3>
                     <p>Putra Pertama dari:</p>
@@ -299,7 +305,7 @@
                 >
                     <img
                         src="{{ asset('storage/' . $invitation->bride_photo_path) }}"
-                        alt="Foto Mempelai Wanita: {{ $invitation->bride_name }}"
+                        alt="Mempelai Wanita"
                     />
                     <h3 class="script-font">{{ $invitation->bride_name }}</h3>
                     <p>Putri Kedua dari:</p>
@@ -414,8 +420,13 @@
             </p>
             <div class="color-palette">
                 @if($invitation->events->first() && $invitation->events->first()->dress_code_colors)
-                    @foreach($invitation->events->first()->dress_code_colors as $color)
-                        <div class="color-box" style="background-color: {{ $color }};"></div>
+                   @php
+                        // Memecah string menjadi array menggunakan pemisah koma
+                        $colors = explode(',', $invitation->events->first()->dress_code_colors);
+                    @endphp
+
+                    @foreach($colors as $color)
+                        <div class="color-box" style="background-color: {{ trim($color) }};"></div>
                     @endforeach
                 @else
                     <div class="color-box" style="background-color: #e3d5d1;"></div>
@@ -755,7 +766,7 @@
                 message: document.getElementById("wishes").value,
             };
 
-            fetch('{{ route('guestbook.store', $invitation) }}', {
+            fetch('{{  $formAction }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
