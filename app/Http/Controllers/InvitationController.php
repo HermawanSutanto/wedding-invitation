@@ -217,14 +217,22 @@ class InvitationController extends Controller
                     collect($validated)->only($invitation->getFillable())->all()
                 );
 
-                // Update setiap acara terkait
-                if (isset($validated['events'])) {
-                    foreach ($validated['events'] as $index => $eventData) {
-                        if (isset($invitation->events[$index])) {
-                            $invitation->events[$index]->update($eventData);
-                        }
-                    }
+                // --- LOGIKA BARU UNTUK SINKRONISASI EVENTS ---
+                $eventDataFromRequest = $request->input('events', []);
+                $submittedEventIds = [];
+
+                foreach($eventDataFromRequest as $eventData) {
+                    // Jika ada ID, update event yang ada. Jika tidak, buat baru.
+                    $event = $invitation->events()->updateOrCreate(
+                        ['id' => $eventData['id'] ?? null], // Kondisi pencarian
+                        $eventData // Data untuk diupdate atau dibuat
+                    );
+                    $submittedEventIds[] = $event->id;
                 }
+                
+                // Hapus event yang tidak ada dalam request (dihapus oleh user di form)
+                $invitation->events()->whereNotIn('id', $submittedEventIds)->delete();
+                // --- AKHIR LOGIKA BARU ---
 
                 
                 $storyDataFromRequest = $request->input('stories', []);

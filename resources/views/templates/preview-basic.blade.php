@@ -795,20 +795,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const audio = document.getElementById('bg-music');
         const playButton = document.getElementById('play-button');
         const pauseButton = document.getElementById('pause-button');
-        
+        if (audio) {
+                    audio.play().catch(e => console.error("Autoplay diblokir oleh browser."));
+                    playButton.classList.add('hidden');
+                    pauseButton.classList.remove('hidden');
+                }
         musicPlayer.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
                 playButton.classList.add('hidden');
                 pauseButton.classList.remove('hidden');
-            } else {
+            } else if(audio.play) {
                 audio.pause();
                 pauseButton.classList.add('hidden');
                 playButton.classList.remove('hidden');
             }
         });
     };
-    
     // --- INITIALIZATION ---
     populateContent();
     setupNavigation();

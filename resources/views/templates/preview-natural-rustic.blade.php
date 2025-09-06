@@ -51,6 +51,14 @@
         }
         header{
             background-image: var(--bg-mobile);
+             /* 1. Membuat gambar menutupi seluruh area tanpa merusak rasio */
+            background-size: cover;
+            
+            /* 2. Memposisikan gambar di tengah-tengah */
+            background-position: center center;
+            
+            /* 3. Mencegah gambar berulang */
+            background-repeat: no-repeat;
         }
         header#home {
           /* Properti yang sudah ada (mengambil dari variabel) */
@@ -101,20 +109,30 @@
         margin-bottom: 1rem;
       }
       @media (min-width: 768px) {
-          header#home {
+        
+          header#home, header#cover {
               /* Ganti dengan gambar untuk desktop */
               background-image: var(--bg-desktop);
           }
+          
+          
       }
     </style>
 </head>
 <body class="font-sans">
 
-    <!-- Floating Navigation -->
-    <button id="nav-toggle" class="fixed bottom-6 right-6 z-50 w-16 h-16 bg-sage-green text-white rounded-full shadow-lg flex items-center justify-center transition-transform duration-300 hover:scale-110">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M4 17c.9-1.3 2.2-2.5 3.5-3.5s2.8-1.8 4.5-2.5c2.3-.9 4.9-1 7-1" /><path d="M4 7c.9 1.3 2.2 2.5 3.5 3.5s2.8 1.8 4.5 2.5c2.3.9 4.9 1 7 1" /><path d="M12 12c4.2 0 7.5 1.5 7.5 3S16.2 18 12 18s-7.5-1.5-7.5-3c0-1.1.9-2 2.2-2.6" /></svg>
+    <button id="music-toggle" class="hidden fixed bottom-6 right-6 z-50 w-14 h-14 bg-sage-green text-white rounded-full shadow-lg flex items-center justify-center transition-transform duration-300 hover:scale-110">
+        <!-- Ikon akan diubah oleh JS -->
+        <svg id="music-icon-on" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <svg id="music-icon-off" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 hidden"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
     </button>
-    
+    <audio id="background-music" src="{{ asset('audio/background-music.mp3') }}" loop></audio>
+
+    <!-- Tombol Navigasi Burger (Baru) -->
+    <button id="nav-toggle" class="hidden fixed top-6 right-6 z-50 w-14 h-14 bg-cream/80 backdrop-blur-md text-charcoal rounded-full shadow-lg flex items-center justify-center transition-opacity duration-300 hover:bg-cream">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+
     <div id="nav-menu" class="hidden fixed inset-0 z-40 bg-cream/80 backdrop-blur-lg">
       <div class="flex flex-col items-center justify-center h-full space-y-8">
          <!-- JS will populate nav links -->
@@ -122,7 +140,23 @@
     </div>
     
     <main class="overflow-x-hidden">
-        <!-- Hero Section -->
+        <!-- Hero Section -->   
+        <header id="cover" class="relative h-screen flex flex-col justify-center items-center text-charcoal text-center p-6 transition-opacity duration-1000">
+            <div class="absolute inset-0 bg-cream/70"></div>
+            <div class="relative z-10 scale-in-fade">
+                <p class="text-xl sm:text-2xl tracking-wider mb-4 font-light">The Wedding Of</p>
+                <h1 id="hero-couple-names" class="text-6xl sm:text-8xl font-serif"></h1>
+                <div class="h-px w-24 bg-charcoal/30 mx-auto my-8"></div>
+                <div class="mt-12">
+                    <p class="text-lg">Dear,</p>
+                    <p id="hero-guest-name" class="text-2xl font-bold mt-1"></p>
+                </div>
+                <button id="open-invitation" class="mt-10 bg-sage-green text-white px-8 py-3 text-sm font-semibold tracking-wider rounded-md hover:bg-charcoal transition-colors">
+                    Buka Undangan
+                </button>
+            </div>
+        </header>
+    <div id="main-content" class="hidden">
         <header id="home" class="relative h-screen flex flex-col justify-center items-center text-charcoal text-center p-6">
             <div id="hero-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-out scale-105"></div>
             <div class="absolute inset-0 bg-cream/70"></div>
@@ -133,13 +167,13 @@
             </div>
             <div class="relative z-10 scale-in-fade">
                 <p class="text-xl sm:text-2xl tracking-wider mb-4 font-light">We Are Getting Married</p>
-                <h1 id="hero-couple-names" class="text-6xl sm:text-8xl font-serif"></h1>
+                <h1 id="hero-couple-names2" class="text-6xl sm:text-8xl font-serif"></h1>
                 <div class="h-px w-24 bg-charcoal/30 mx-auto my-8"></div>
                 <p id="hero-date" class="text-xl sm:text-2xl font-semibold tracking-wider"></p>
             </div>
             <div class="absolute bottom-10 z-10 text-center">
               <p class="text-lg">Dear,</p>
-              <p id="hero-guest-name" class="text-2xl font-bold mt-1"></p>
+              <p id="hero-guest-name2" class="text-2xl font-bold mt-1"></p>
             </div>
         </header>
 
@@ -198,7 +232,8 @@
                 <p class="text-charcoal/80 mb-12 max-w-2xl mx-auto">
                     Your presence and blessings are the greatest gift. However, should you wish to give a token of your love, we would be deeply grateful.
                 </p>
-                <div id="gift-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div id="gift-container" class="gap-8">
+
                    <!-- JS will populate this -->
                 </div>
             </div>
@@ -260,11 +295,87 @@
         </button>
         <img id="lightbox-img" src="" alt="Gallery view" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl" />
     </div>
-
+</div>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA ---
+// --- Elemen Penting ---
+    const cover = document.getElementById('cover');
+    const openButton = document.getElementById('open-invitation');
+    const mainContent = document.getElementById('main-content');
+    const audio = document.getElementById('background-music');
+    const musicToggleButton = document.getElementById('music-toggle');
+    const navToggle = document.getElementById('nav-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    // --- Logika Buka Undangan ---
+    openButton.addEventListener('click', () => {
+        cover.style.opacity = '0';
+        setTimeout(() => cover.style.display = 'none', 1000);
+        
+        mainContent.classList.remove('hidden');
+        musicToggleButton.classList.remove('hidden');
+        navToggle.classList.remove('hidden');
+
+        if (audio) {
+            audio.play().catch(e => console.error("Autoplay diblokir oleh browser."));
+            updateMusicIcon(true);
+        }
+    });
+    
+    // --- Logika Tombol Musik ---
+    const musicIconOn = document.getElementById('music-icon-on');
+    const musicIconOff = document.getElementById('music-icon-off');
+
+    function updateMusicIcon(isPlaying) {
+        musicIconOn.classList.toggle('hidden', !isPlaying);
+        musicIconOff.classList.toggle('hidden', isPlaying);
+    }
+
+    musicToggleButton.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+            updateMusicIcon(true);
+        } else {
+            audio.pause();
+            updateMusicIcon(false);
+        }
+    });
+
+    // --- Logika Navigasi Burger ---
+    const setupNavigation = () => {
+        const navLinksContainer = navMenu.firstElementChild;
+        let links = [
+            { href: '#couple', text: 'Couple' },
+            @if(optional($invitation->package)->has_love_story) { href: '#story', text: 'Story' }, @endif
+            { href: '#event', text: 'Event' },
+            @if(!empty($invitation->galleries)) { href: '#gallery', text: 'Gallery' }, @endif
+            @if(optional($invitation->package)->has_rsvp) { href: '#rsvp', text: 'RSVP' } @endif
+        ].filter(Boolean);
+
+        navLinksContainer.innerHTML = links.map(link => `<a href="${link.href}" class="nav-link font-serif text-4xl text-charcoal hover:text-gold-accent transition-colors">${link.text}</a>`).join('');
+
+        const toggleMenu = () => navMenu.classList.toggle('hidden');
+
+        navToggle.addEventListener('click', toggleMenu);
+        navMenu.addEventListener('click', (e) => {
+            if (e.target.classList.contains('nav-link')) {
+                toggleMenu();
+            }
+        });
+    };
+
+  
+    
+    const heroDate = document.getElementById('hero-date');
+    if(heroDate && @json($invitation->events[0] ?? null)) {
+         heroDate.textContent = new Date(@json($invitation->events[0]->event_date)).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+   
+
+
     const oneMonthFromNow = new Date();
     oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
 
@@ -331,6 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('hero-date').textContent = invitationData.events[0] ? formatDate(invitationData.events[0].event_date) : 'Coming Soon';
         const guestName = new URLSearchParams(window.location.search).get('to') || 'Honored Guest';
         document.getElementById('hero-guest-name').textContent = guestName;
+        document.getElementById('hero-guest-name2').textContent = guestName;
+        document.getElementById('hero-couple-names2').innerHTML = `${invitationData.groom_name} &amp; ${invitationData.bride_name}`;
 
         // Quote
         document.getElementById('quote-text').innerHTML += invitationData.quote;
@@ -405,6 +518,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="text-sm px-4">${event.venue_address}</p>
                 </div>
                 ${event.google_maps_link ? `<a href="${event.google_maps_link}" target="_blank" rel="noopener noreferrer" class="inline-block mt-8 bg-sage-green text-white px-8 py-3 text-sm font-semibold tracking-wider rounded-md hover:bg-charcoal transition-colors">View Map</a>` : ''}
+                ${event.livestream_link ? `<a href="${event.livestream_link}" target="_blank" rel="noopener noreferrer" class="inline-block mt-8 bg-sage-green text-white px-8 py-3 text-sm font-semibold tracking-wider rounded-md hover:bg-charcoal transition-colors">Tonton Live</a>` : ''}
+
             </div>
         `).join('');
         // 1. Definisikan data galeri dummy Anda
@@ -448,9 +563,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Gift (REFINED)
-        if (invitationData.gifts.length > 0) {
+        const giftContainer = document.getElementById('gift-container');
+
+        if (invitationData.gifts && invitationData.gifts.length > 0) {
             document.getElementById('gift').classList.remove('hidden');
-            document.getElementById('gift-container').innerHTML = invitationData.gifts.map(gift => `
+             // Cek jumlah hadiah
+            if (invitationData.gifts.length === 1) {
+                // JIKA HANYA 1: Gunakan Flexbox untuk menengahkan
+                giftContainer.classList.add('flex', 'justify-center');
+            } else {
+                // JIKA LEBIH DARI 1: Gunakan Grid seperti sebelumnya
+                giftContainer.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2');
+            }
+                giftContainer.innerHTML = invitationData.gifts.map(gift => `
                 <div class="bg-white p-8 border border-gold-accent/20 text-center rounded-lg shadow-lg flex flex-col items-center">
                     <div class="w-16 h-16 mb-4 text-gold-accent flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12"><path d="M20 12v10H4V12"/><path d="M20 7H4V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
@@ -500,32 +625,32 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     };
     
-    // --- NAVIGATION ---
-    const setupNavigation = () => {
-        const navToggle = document.getElementById('nav-toggle');
-        const navMenu = document.getElementById('nav-menu');
+    // // --- NAVIGATION ---
+    // const setupNavigation = () => {
+    //     const navToggle = document.getElementById('nav-toggle');
+    //     const navMenu = document.getElementById('nav-menu');
         
-        let links = [
-            { href: '#couple', text: 'Couple' },
-            invitationData.package.has_love_story && { href: '#story', text: 'Story' },
-            { href: '#event', text: 'Event' },
-            invitationData.galleries.length > 0 && { href: '#gallery', text: 'Gallery' },
-            invitationData.package.has_rsvp && { href: '#rsvp', text: 'RSVP' }
-        ].filter(Boolean);
+    //     let links = [
+    //         { href: '#couple', text: 'Couple' },
+    //         invitationData.package.has_love_story && { href: '#story', text: 'Story' },
+    //         { href: '#event', text: 'Event' },
+    //         invitationData.galleries.length > 0 && { href: '#gallery', text: 'Gallery' },
+    //         invitationData.package.has_rsvp && { href: '#rsvp', text: 'RSVP' }
+    //     ].filter(Boolean);
 
-        navMenu.firstElementChild.innerHTML = links.map(link => `<a href="${link.href}" class="nav-link font-serif text-4xl text-charcoal hover:text-gold-accent transition-colors">${link.text}</a>`).join('');
+    //     navMenu.firstElementChild.innerHTML = links.map(link => `<a href="${link.href}" class="nav-link font-serif text-4xl text-charcoal hover:text-gold-accent transition-colors">${link.text}</a>`).join('');
 
-        const toggleMenu = () => {
-             navMenu.classList.toggle('hidden');
-        }
+    //     const toggleMenu = () => {
+    //          navMenu.classList.toggle('hidden');
+    //     }
 
-        navToggle.addEventListener('click', toggleMenu);
-        navMenu.addEventListener('click', (e) => {
-            if (e.target.classList.contains('nav-link')) {
-                toggleMenu();
-            }
-        });
-    };
+    //     navToggle.addEventListener('click', toggleMenu);
+    //     navMenu.addEventListener('click', (e) => {
+    //         if (e.target.classList.contains('nav-link')) {
+    //             toggleMenu();
+    //         }
+    //     });
+    // };
 
     // --- INTERACTIVITY ---
     const setupInteractivity = () => {

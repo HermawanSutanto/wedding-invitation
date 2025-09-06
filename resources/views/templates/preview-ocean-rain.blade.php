@@ -67,26 +67,40 @@
             /* Definisikan URL gambar untuk desktop (menggunakan hero_image) */
             --bg-desktop: url('{{ asset('storage/' . ($invitation->hero_image ?? 'images/defaults/default-hero.webp')) }}');
         }
-      header{
-          background-image: var(--bg-mobile);
+        header{
+            background-image: var(--bg-mobile);
+                background-size: cover;
+        }
+        header#home {
+            /* Properti yang sudah ada (mengambil dari variabel) */
+            background-image: var(--bg-mobile); /* Default untuk mobile */
+
+            /* --- TAMBAHKAN 3 BARIS DI BAWAH INI --- */
+            
+            /* 1. Membuat gambar menutupi seluruh area tanpa merusak rasio */
             background-size: cover;
+            
+            /* 2. Memposisikan gambar di tengah-tengah */
+            background-position: center center;
+            
+            /* 3. Mencegah gambar berulang */
+            background-repeat: no-repeat;
+        }
+        header#cover {
+            /* Properti yang sudah ada (mengambil dari variabel) */
+            background-image: var(--bg-mobile); /* Default untuk mobile */
 
-      }
-      header#home {
-          /* Properti yang sudah ada (mengambil dari variabel) */
-          background-image: var(--bg-mobile); /* Default untuk mobile */
-
-          /* --- TAMBAHKAN 3 BARIS DI BAWAH INI --- */
-          
-          /* 1. Membuat gambar menutupi seluruh area tanpa merusak rasio */
-          background-size: cover;
-          
-          /* 2. Memposisikan gambar di tengah-tengah */
-          background-position: center center;
-          
-          /* 3. Mencegah gambar berulang */
-          background-repeat: no-repeat;
-      }
+            /* --- TAMBAHKAN 3 BARIS DI BAWAH INI --- */
+            
+            /* 1. Membuat gambar menutupi seluruh area tanpa merusak rasio */
+            background-size: cover;
+            
+            /* 2. Memposisikan gambar di tengah-tengah */
+            background-position: center center;
+            
+            /* 3. Mencegah gambar berulang */
+            background-repeat: no-repeat;
+        }
       body {
         background-color: #0c1a3d; /* Updated to darker blue-purple */
         color: #d6e1ff; /* Updated to light blue-ish white */
@@ -265,7 +279,7 @@
         100% { background-position: 0% 0%; }
       }
       @media (min-width: 768px) {
-          header#home {
+          header#home,header#cover {
               /* Ganti dengan gambar untuk desktop */
               background-image: var(--bg-desktop);
           }
@@ -284,12 +298,13 @@
     <div class="music-player" id="sound-toggle">
         <audio id="bg-music" loop preload="auto">
         <source src="{{ asset('audio/background-music.mp3') }}" type="audio/mpeg">
-      </audio>
+    </audio>
+        <span id="music-icon-container">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-lightning-blue">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
         </svg>
+    </span>
     </div>
 
     <!-- Navigation -->
@@ -307,9 +322,34 @@
              <!-- JS will populate mobile nav links -->
         </div>
     </nav>
-    
-    <main class="relative z-10">
+    <!-- Cover Section (Fullscreen Overlay) -->
+    <header id="cover" class="fixed inset-0 z-50 flex flex-col justify-center items-center text-charcoal text-center p-6 transition-opacity duration-1000 bg-cover-image" >
+        <div class="absolute inset-0 bg-cream/70"></div>
+        <div class="relative z-10 scale-in-fade">
+            <p class="text-xl sm:text-2xl tracking-wider mb-4 font-light">The Wedding Of</p>
+            <h1 class="text-6xl sm:text-8xl font-serif">{{ $invitation->groom_name ?? 'Mempelai Pria' }} &amp; {{ $invitation->bride_name ?? 'Mempelai Wanita' }}</h1>
+            <div class="h-px w-24 bg-charcoal/30 mx-auto my-8"></div>
+            <div class="mt-12">
+                <p class="text-lg">Dear,</p>
+                <p id="guest-name" class="text-2xl font-bold mt-1">Tamu Undangan</p>
+            </div>
+           <button
+            id="open-invitation"
+            type="button"
+            class="
+                mt-10 rounded-full bg-gradient-to-br from-rain-blue to-rain-purple px-8 py-3
+                text-sm font-bold tracking-wider text-white shadow-lg
+                transition-transform duration-300 ease-in-out
+                hover:scale-105 hover:shadow-xl
+            "
+            >
+            Buka Undangan
+            </button>
+        </div>
+    </header>
+    <main id="main-content" class="relative z-10">
         <!-- Hero Section -->
+        
         <header id="home" class="h-screen flex flex-col justify-center items-center text-center p-6 relative bg-cover bg-center bg-no-repeat overflow-hidden">
             <div class="absolute inset-0 bg-black/50 z-0"></div>
             
@@ -403,8 +443,8 @@
                             <label for="attendance_status" class="block text-sm font-semibold text-light-sand/80 mb-2">Will you be attending?</label>
                             <select name="attendance_status" required class="w-full px-4 py-3 bg-ocean-dark/70 border border-seafoam-green/20 rounded-md focus:ring-2 focus:ring-seafoam-green focus:border-seafoam-green outline-none transition-shadow text-light-sand">
                                 <option value="" disabled selected>Please select...</option>
-                                <option value="Attending">Yes, with pleasure</option>
-                                <option value="Not Attending">Regretfully, I cannot</option>
+                                <option value="Hadir">Yes, with pleasure</option>
+                                <option value="Tidak Hadir">Regretfully, I cannot</option>
                             </select>
                         </div>
                         <div>
@@ -442,7 +482,62 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+ // --- Elemen Penting ---
+    const body = document.body;
+    const cover = document.getElementById('cover');
+    const openButton = document.getElementById('open-invitation');
+    const mainContent = document.getElementById('main-content');
+    const audio = document.getElementById('bg-music');
+        const musicToggleButton = document.getElementById('sound-toggle');
 
+    // --- Logika Buka Undangan ---
+    openButton.addEventListener('click', () => {
+        cover.style.opacity = '0';
+        setTimeout(() => cover.style.display = 'none', 1000);
+        
+        mainContent.classList.remove('hidden');
+        musicToggleButton.classList.remove('hidden');
+        body.classList.remove('overflow-hidden'); // Aktifkan kembali scroll
+
+        if (audio) {
+            audio.play().catch(e => console.error("Autoplay diblokir oleh browser."));
+            updateMusicIcon(true);
+        }
+    });
+    
+    // --- Logika Tombol Musik ---
+    function updateMusicIcon(isPlaying) {
+        const iconContainer = document.getElementById('music-icon-container'); // Target the new span
+
+        const musicOnIcon = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-lightning-blue">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>`;
+
+        const musicOffIcon = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-lightning-blue">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <line x1="23" y1="9" x2="17" y2="15"></line>
+                <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>`;
+
+        // Directly set the HTML of the button to the correct icon
+        // Only replace the icon, leaving the <audio> element alone
+        if (iconContainer) {
+            iconContainer.innerHTML = isPlaying ? musicOnIcon : musicOffIcon;
+        }
+    }
+
+    musicToggleButton.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+            updateMusicIcon(true);
+        } else {
+            audio.pause();
+            updateMusicIcon(false);
+        }
+    });
     // --- DATA ---
     const oneMonthFromNow = new Date();
     oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
@@ -993,46 +1088,13 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(createRaindrop, 100);
     };
     
-    // --- SOUND CONTROL ---
-    const setupSoundControl = () => {
-        const soundToggle = document.getElementById('sound-toggle');
-        const rainSound = document.getElementById('rain-sound');
-        let soundEnabled = false;
-        
-        // Toggle sound on/off
-        soundToggle.addEventListener('click', () => {
-            if (soundEnabled) {
-                rainSound.pause();
-                soundToggle.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seafoam-green">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <line x1="23" y1="9" x2="17" y2="15"></line>
-                        <line x1="17" y1="9" x2="23" y2="15"></line>
-                    </svg>
-                `;
-            } else {
-                rainSound.volume = 0.3; // Set volume to 30%
-                rainSound.play();
-                soundToggle.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seafoam-green">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                    </svg>
-                `;
-            }
-            soundEnabled = !soundEnabled;
-        });
-    };
     
-    // --- INITIALIZATION ---
     populateContent();
     setupRainAnimation();
     setupNavigation();
     setupInteractivity();
     setupAnimations();
     setupWaterRipple();
-    setupSoundControl();
 });
 </script>
 </body>

@@ -237,8 +237,8 @@
                                 <label for="attendance_status" class="block text-sm font-semibold text-summer-text/80 mb-2">Will you be attending?</label>
                                 <select name="attendance_status" required class="w-full px-4 py-3 bg-summer-bg border border-summer-terracotta/20 rounded-md focus:ring-2 focus:ring-summer-terracotta focus:border-summer-terracotta outline-none transition-shadow">
                                     <option value="" disabled selected>Please select...</option>
-                                    <option value="Attending">Yes, with pleasure</option>
-                                    <option value="Not Attending">Regretfully, I cannot</option>
+                                    <option value="Hadir">Yes, with pleasure</option>
+                                    <option value="Tidak Hadir">Regretfully, I cannot</option>
                                 </select>
                             </div>
                             <div>
@@ -278,7 +278,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-
+    
+            
     // --- DATA ---
     const oneMonthFromNow = new Date();
     oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
@@ -797,7 +798,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const audio = document.getElementById('bg-music');
         const playButton = document.getElementById('play-button');
         const pauseButton = document.getElementById('pause-button');
-        
+        const musicToggleButton = document.getElementById('sound-toggle');
+        if (audio) {
+                    audio.play().catch(e => console.error("Autoplay diblokir oleh browser."));
+                    playButton.classList.add('hidden');
+                    pauseButton.classList.remove('hidden');
+                }
         musicPlayer.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
